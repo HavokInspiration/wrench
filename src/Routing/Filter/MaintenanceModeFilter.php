@@ -40,7 +40,10 @@ class MaintenanceModeFilter extends DispatcherFilter
         'when' => null,
         'for' => null,
         'priority' => 1,
-        'ipWhiteList' => []
+        'mode' => [
+            'className' => 'Wrench\Mode\Redirect',
+            'config' => []
+        ]
     ];
 
     /**
@@ -49,18 +52,17 @@ class MaintenanceModeFilter extends DispatcherFilter
      */
     public function __construct($config = [])
     {
-        if (empty($config['mode']['className'])) {
+        parent::__construct($config);
+
+        $className = $this->config('mode.className');
+        if (empty($className)) {
             throw new MissingModeException(['mode' => '']);
         }
 
-        $className = $config['mode']['className'];
-
-        $filterConfig = !empty($config['mode']['config']) ? $config['mode']['config'] : [];
-        unset($config['mode']);
+        $config = $this->config('mode.config');
+        $filterConfig = !empty($config) ? $config : [];
 
         $this->mode($className, $filterConfig);
-
-        parent::__construct($config);
     }
 
     /**
@@ -104,13 +106,6 @@ class MaintenanceModeFilter extends DispatcherFilter
         }
 
         $request = $event->data['request'];
-        $ip = $request->clientIp();
-        $whiteList = $this->config('ipWhiteList');
-
-        if (!empty($whiteList) && in_array($ip, $whiteList)) {
-            return null;
-        }
-
         $response = $event->data['response'];
         $response = $this->mode()->process($request, $response);
 

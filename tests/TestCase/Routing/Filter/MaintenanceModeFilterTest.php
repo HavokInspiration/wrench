@@ -25,12 +25,13 @@ class MaintenanceModeFilterTest extends TestCase
     /**
      * Test loading the filter without passing params.
      *
-     * @expectedException \Wrench\Mode\Exception\MissingModeException
+     * @return void
      */
-    public function testMaintenanceModeFilterException()
+    public function testMaintenanceModeFilterNoParams()
     {
         $filter = new MaintenanceModeFilter();
-        $request = new Request();
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request]));
+        $this->assertEquals('Wrench\Mode\Redirect', $filter->config('mode.className'));
+        $this->assertEquals([], $filter->config('mode.config'));
+        $this->assertInstanceOf('Wrench\Mode\Redirect', $filter->mode());
     }
 }
