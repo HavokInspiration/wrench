@@ -48,6 +48,13 @@ DispatcherFactory::add('Wrench.MaintenanceMode');
 
 By default, only adding it with the previous line will make use of the **Redirect** mode. More informations on maintenance Modes below.
 
+The Filter is only active when the Configure key ``Wrench.enable`` is equal to ``true``.
+To enable the maintenance mode, use the following statement in your **bootstrap.php** file :
+
+```php
+Configure::write('Wrench.enable', true);
+```
+
 ### Modes
 
 The plugin is built around the concept of "modes".
