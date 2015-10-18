@@ -127,7 +127,8 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
 
 - [ ] Add a direct output / View layer mode
 - [ ] Document how to build a custom mode
-- [ ] Tests and write about the ``when`` and ``for`` options
+- [ ] Implement, test and write about passing a Mode instance
+- [ ] Test and write about the ``when`` and ``for`` options
 
 ## License
 
