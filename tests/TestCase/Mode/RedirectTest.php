@@ -31,6 +31,7 @@ class RedirectTest extends TestCase
 
     /**
      * Test the Redirect filter mode
+     * @return void
      */
     public function testMaintenanceModeFilterRedirectNoParam()
     {
@@ -53,6 +54,7 @@ class RedirectTest extends TestCase
 
     /**
      * Test the Redirect filter mode
+     * @return void
      */
     public function testMaintenanceModeFilterRedirect()
     {
@@ -76,6 +78,40 @@ class RedirectTest extends TestCase
         $response->expects($this->once())
             ->method('location')
             ->with('http://www.example.com/maintenance.html');
+
+        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+    }
+
+    /**
+     * Test the Redirect filter mode with additional headers
+     * @return void
+     */
+    public function testMaintenanceModeFilterRedirectHeaders()
+    {
+        Configure::write('Wrench.enable', true);
+
+        $filter = new MaintenanceModeFilter([
+            'mode' => [
+                'className' => 'Wrench\Mode\Redirect',
+                'config' => [
+                    'code' => 503,
+                    'url' => 'http://www.example.com/maintenance.html',
+                    'headers' => ['someHeader' => 'someValue']
+                ]
+            ]
+        ]);
+
+        $request = new Request();
+        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location']);
+        $response->expects($this->once())
+            ->method('statusCode')
+            ->with(503);
+        $response->expects($this->once())
+            ->method('location')
+            ->with('http://www.example.com/maintenance.html');
+        $response->expects($this->once())
+            ->method('headers')
+            ->with(['someHeader' => 'someValue']);
 
         $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
     }

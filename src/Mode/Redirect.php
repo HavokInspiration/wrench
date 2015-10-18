@@ -15,12 +15,12 @@ use Cake\Network\Request;
 use Cake\Network\Response;
 
 /**
- * `Redirect` Maintenance Mode
+ * `Redirect` Maintenance Mode.
  * When used, it will perform a redirect to a specific URL with the
- * status code specified
+ * status code specified.
  *
  * If no URL is provided, a default one will be built with the current base path
- * and pointing to a `maintenance.html` file
+ * and pointing to a `maintenance.html` file.
  */
 class Redirect extends Mode
 {
@@ -28,23 +28,50 @@ class Redirect extends Mode
     /**
      * Default config
      *
+     * - `code` : The status code to be sent along with the request.
+     * Should be a code in the 3XX range. Other code range may not work
+     * - `url` : URL where to redirect the request. If no url is provided,
+     * a URL will be built based on the base URL path and pointing to a
+     * "maintenance.html" file (located under /webroot
+     * - `headers` : Additional headers to be set with the response
+     *
      * @var array
      */
     protected $_defaultConfig = [
         'code' => 307,
-        'url' => ''
+        'url' => '',
+        'headers' => []
     ];
 
+    /**
+     * Will set the location where to redirect the request with the specified code
+     * and optional additional headers.
+     *
+     * @inheritDoc
+     */
     public function process(Request $request, Response $response)
     {
-        $url = $this->getUrl($request);
+        $url = $this->_getUrl($request);
 
         $response->statusCode($this->config('code'));
         $response->location($url);
+
+        if (!empty($this->config('headers'))) {
+            $response->header($this->config('headers'));
+        }
         return $response;
     }
 
-    protected function getUrl(Request $request)
+    /**
+     * Return the URL where to redirect the request.
+     * If no URL is provided, a default one will be built with the current base path
+     * and pointing to a `maintenance.html` file.
+     *
+     * @param \Cake\Network\Request $request Request that can be used to get the URL.
+     *
+     * @return string URL where to redirect
+     */
+    protected function _getUrl(Request $request)
     {
         $url = $this->config('url');
 
