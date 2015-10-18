@@ -46,11 +46,17 @@ To use the Maintenance mode, you need to add the **MaintenanceModeFilter** to th
 DispatcherFactory::add('Wrench.MaintenanceMode');
 ```
 
+By default, only adding it with the previous line will make use of the **Redirect** mode. More informations on maintenance Modes below.
+
 ### Modes
 
-The plugin comes packaged with two maintenance modes. You can configure it to use specific modes when
-adding the Filter to the DispatcherFactory using the ``options`` parameter of the ``DispatcherFactory::add()``
-method.
+The plugin is built around the concept of "modes".
+Modes are special class which will have the task of processing the request and return the proper response
+in order to warn the user that the website / application is undergoing maintenance.
+
+The plugin comes packaged with two maintenance modes : ``Redirect`` and ``Callback``.
+
+You can configure it to use specific modes when adding the Filter to the DispatcherFactory using the ``options`` parameter of the ``DispatcherFactory::add()`` method.
 The array of parameters is required to be of the following form:
 
 ```php
@@ -78,16 +84,16 @@ page.
 You can customize all those parameters :
 
 ```php
-    DispatcherFactory::add('Wrench.MaintenanceMode', [
-        'mode' => [
-            'className' => 'Wrench\Mode\Redirect',
-            'config' => [
-                'url' => 'http://example.com/maintenance',
-                'code' => 303
-                'headers' => ['someHeader' => 'someValue']
-            ]
+DispatcherFactory::add('Wrench.MaintenanceMode', [
+    'mode' => [
+        'className' => 'Wrench\Mode\Redirect',
+        'config' => [
+            'url' => 'http://example.com/maintenance',
+            'code' => 303
+            'headers' => ['someHeader' => 'someValue']
         ]
-    ]);
+    ]
+]);
 ```
 
 #### Callback Mode
@@ -103,25 +109,25 @@ The callable is expected to return a ``\Cake\Network\Response`` if the request i
 stopped.
 
 ```php
-    DispatcherFactory::add('Wrench.MaintenanceMode', [
-        'mode' => [
-            'className' => 'Wrench\Mode\Callback',
-            'config' => [
-                'callback' => function($request, $response) {
-                    $response->body('This is from a callback');
-                    $response->statusCode(503);
-                    return $response;
-                }
-            ]
+DispatcherFactory::add('Wrench.MaintenanceMode', [
+    'mode' => [
+        'className' => 'Wrench\Mode\Callback',
+        'config' => [
+            'callback' => function($request, $response) {
+                $response->body('This is from a callback');
+                $response->statusCode(503);
+                return $response;
+            }
         ]
-    ]);
+    ]
+]);
 ```
 
 ## To do
 
-[ ] Add a direct output / View layer mode
-[ ] Document how to build a custom mode
-[ ] Tests and write about the ``when`` and ``for`` options
+- [ ] Add a direct output / View layer mode
+- [ ] Document how to build a custom mode
+- [ ] Tests and write about the ``when`` and ``for`` options
 
 ## License
 
