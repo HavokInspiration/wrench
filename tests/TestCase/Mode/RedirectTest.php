@@ -33,7 +33,7 @@ class RedirectTest extends TestCase
      * Test the Redirect filter mode
      * @return void
      */
-    public function testMaintenanceModeFilterRedirectNoParam()
+    public function testRedirectModeNoParams()
     {
         Configure::write('Wrench.enable', true);
 
@@ -56,7 +56,7 @@ class RedirectTest extends TestCase
      * Test the Redirect filter mode
      * @return void
      */
-    public function testMaintenanceModeFilterRedirect()
+    public function testRedirectModeCustomParams()
     {
         Configure::write('Wrench.enable', true);
 
@@ -102,7 +102,7 @@ class RedirectTest extends TestCase
         ]);
 
         $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location']);
+        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location', 'header']);
         $response->expects($this->once())
             ->method('statusCode')
             ->with(503);
@@ -110,7 +110,7 @@ class RedirectTest extends TestCase
             ->method('location')
             ->with('http://www.example.com/maintenance.html');
         $response->expects($this->once())
-            ->method('headers')
+            ->method('header')
             ->with(['someHeader' => 'someValue']);
 
         $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
