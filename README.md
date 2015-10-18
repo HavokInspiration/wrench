@@ -5,7 +5,7 @@
 Wrench is a CakePHP 3.X plugin that aims to provide an easy way to implement a **Maintenance Mode**
 for your CakePHP website / applications.
 
-## Requirement
+## Requirements
 
 - CakePHP 3
 - PHP 5.4.16
@@ -119,8 +119,9 @@ stopped.
 
 ## To do
 
-[ ] Document how to build a custom mode
 [ ] Add a direct output / View layer mode
+[ ] Document how to build a custom mode
+[ ] Tests and write about the ``when`` and ``for`` options
 
 ## License
 
