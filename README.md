@@ -1,6 +1,6 @@
 # Maintenance mode plugin for CakePHP
 
-**This plugin is still under development.**
+**This plugin is still under development and should be considered alpha software.**
 
 Wrench is a CakePHP 3.X plugin that aims to provide an easy way to implement a **Maintenance Mode**
 for your CakePHP website / applications.
