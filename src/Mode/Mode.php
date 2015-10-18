@@ -24,6 +24,14 @@ abstract class Mode
     use InstanceConfigTrait;
 
     /**
+     * Default config for the mode.
+     * Extending classes should use this property to define default config parameters
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [];
+
+    /**
      * Constructor.
      * Will set the config using the methods from the InstanceConfigTrait
      *

@@ -113,5 +113,7 @@ class MaintenanceModeFilter extends DispatcherFilter
             $event->stopPropagation();
             return $response;
         }
+
+        return null;
     }
 }
