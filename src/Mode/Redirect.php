@@ -44,10 +44,10 @@ class Redirect extends Mode
     ];
 
     /**
+     * {@inheritDoc}
+     *
      * Will set the location where to redirect the request with the specified code
      * and optional additional headers.
-     *
-     * {@inheritdoc}
      */
     public function process(Request $request, Response $response)
     {
