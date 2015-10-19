@@ -28,7 +28,7 @@ class Callback extends Mode
     /**
      * Will try to call the callback pass as parameter
      *
-     * @inheritDoc
+     * {@inheritdoc}
      * @throw \InvalidArgumentException if the callback parameter is not a proper callable.
      */
     public function process(Request $request, Response $response)
