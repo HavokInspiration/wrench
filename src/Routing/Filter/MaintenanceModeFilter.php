@@ -47,7 +47,8 @@ class MaintenanceModeFilter extends DispatcherFilter
     ];
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @throws \Wrench\Mode\Exception\MissingModeException When the specified mode can not be loaded
      */
     public function __construct($config = [])
@@ -95,7 +96,7 @@ class MaintenanceModeFilter extends DispatcherFilter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * @return \Cake\Network\Response|null
      */

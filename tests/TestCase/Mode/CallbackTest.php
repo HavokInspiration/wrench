@@ -22,7 +22,7 @@ class CallbackTest extends TestCase
 {
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function tearDown()
     {
@@ -42,7 +42,7 @@ class CallbackTest extends TestCase
             'mode' => [
                 'className' => 'Wrench\Mode\Callback',
                 'config' => [
-                    'callback' => function($request, $response) {
+                    'callback' => function ($request, $response) {
                         $response->body('This is from a callback');
                         $response->statusCode(503);
                         return $response;

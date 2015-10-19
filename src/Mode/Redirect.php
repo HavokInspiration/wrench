@@ -44,10 +44,10 @@ class Redirect extends Mode
     ];
 
     /**
+     * {@inheritDoc}
+     *
      * Will set the location where to redirect the request with the specified code
      * and optional additional headers.
-     *
-     * @inheritDoc
      */
     public function process(Request $request, Response $response)
     {
@@ -56,8 +56,9 @@ class Redirect extends Mode
         $response->statusCode($this->config('code'));
         $response->location($url);
 
-        if (!empty($this->config('headers'))) {
-            $response->header($this->config('headers'));
+        $headers = $this->config('headers');
+        if (!empty($headers)) {
+            $response->header($headers);
         }
         return $response;
     }
