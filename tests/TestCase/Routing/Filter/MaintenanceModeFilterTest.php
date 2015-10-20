@@ -14,6 +14,7 @@ namespace Wrench\Test\TestCase\Routing\Filter;
 use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\TestSuite\TestCase;
+use Wrench\Mode\Redirect;
 use Wrench\Routing\Filter\MaintenanceModeFilter;
 
 /**
@@ -33,5 +34,29 @@ class MaintenanceModeFilterTest extends TestCase
         $this->assertEquals('Wrench\Mode\Redirect', $filter->config('mode.className'));
         $this->assertEquals([], $filter->config('mode.config'));
         $this->assertInstanceOf('Wrench\Mode\Redirect', $filter->mode());
+    }
+
+    /**
+     * Test loading the filter by passing a Mode instance in the `mode` key
+     * of the filter config
+     *
+     * @return void
+     */
+    public function testMaintenanceModeFilterModeInstance()
+    {
+        $filter = new MaintenanceModeFilter([
+            'mode' => new Redirect([
+                'url' => 'http://example.com/maintenance/'
+            ])
+        ]);
+
+        $this->assertInstanceOf('Wrench\Mode\Redirect', $filter->mode());
+
+        $expected = [
+            'code' => 307,
+            'url' => 'http://example.com/maintenance/',
+            'headers' => []
+        ];
+        $this->assertEquals($expected, $filter->mode()->config());
     }
 }

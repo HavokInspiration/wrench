@@ -16,6 +16,7 @@ use Cake\Event\Event;
 use Cake\Network\Response;
 use Cake\Routing\DispatcherFilter;
 use Wrench\Mode\Exception\MissingModeException;
+use Wrench\Mode\Mode;
 
 /**
  * Dispatcher filter responsible of intercepting request to
@@ -55,15 +56,22 @@ class MaintenanceModeFilter extends DispatcherFilter
     {
         parent::__construct($config);
 
-        $className = $this->config('mode.className');
-        if (empty($className)) {
-            throw new MissingModeException(['mode' => '']);
+        $mode = $this->config('mode');
+        if (is_array($mode)) {
+            $className = $this->config('mode.className');
+            if (empty($className)) {
+                throw new MissingModeException(['mode' => '']);
+            }
+
+            $config = $this->config('mode.config');
+            $filterConfig = !empty($config) ? $config : [];
+            $this->mode($className, $filterConfig);
+            return;
         }
 
-        $config = $this->config('mode.config');
-        $filterConfig = !empty($config) ? $config : [];
-
-        $this->mode($className, $filterConfig);
+        if ($mode instanceof Mode) {
+            $this->mode($mode);
+        }
     }
 
     /**
@@ -89,10 +97,10 @@ class MaintenanceModeFilter extends DispatcherFilter
                 throw new MissingModeException(['mode' => $mode]);
             }
 
-            $this->_mode = new $mode($config);
+            $mode = new $mode($config);
         }
 
-        return $this->_mode;
+        return $this->_mode = $mode;
     }
 
     /**

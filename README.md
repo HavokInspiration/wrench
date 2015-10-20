@@ -39,7 +39,7 @@ Plugin::load('Wrench');
 The plugin is built around a **DispatcherFilter** that will intercept the current request to
 return a customized response to warn the user that the website / app is undergoing maintenance.
 
-To use the Maintenance mode, you need to add the **MaintenanceModeFilter** to the 
+To use the Maintenance mode, you need to add the **MaintenanceModeFilter** to the
 **DispatcherFactory** in your bootstrap file using the following statement:
 
 ```php
@@ -77,6 +77,16 @@ The array of parameters is required to be of the following form:
 ]
 ```
 
+If you need it, you can directly pass an instance of a ``Mode`` to the ``mode`` array key of the filter's config:
+
+```php
+DispatcherFactory::add('Wrench.MaintenanceMode', [
+    'mode' => new \Wrench\Mode\Redirect([
+        'url' => 'http://example.com/maintenance'
+    ])
+]);
+```
+
 #### Redirect Mode
 
 The Redirect Mode is the default one. It will perform a redirect to a specific URL.
@@ -87,7 +97,7 @@ page.
 - **code** : The HTTP status code of the redirect response. The code should be in the 3XX range, otherwise, it might
  get overwritten. Default to 307.
 - **headers** : Array of additional headers to pass along the redirect response. Default to empty.
-  
+
 You can customize all those parameters :
 
 ```php
@@ -134,7 +144,7 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
 
 - [ ] Add a direct output / View layer mode
 - [ ] Document how to build a custom mode
-- [ ] Implement, test and write about passing a Mode instance
+- [x] Implement, test and write about passing a Mode instance
 - [ ] Test and write about the ``when`` and ``for`` options
 
 ## License
