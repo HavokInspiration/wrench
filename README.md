@@ -58,7 +58,7 @@ Configure::write('Wrench.enable', true);
 ### Modes
 
 The plugin is built around the concept of "modes".
-Modes are special class which will have the task of processing the request and return the proper response
+Modes are special classes which will have the task of processing the request and return the proper response
 in order to warn the user that the website / application is undergoing maintenance.
 
 The plugin comes packaged with two maintenance modes : ``Redirect`` and ``Callback``.
@@ -101,15 +101,38 @@ page.
 You can customize all those parameters :
 
 ```php
+    DispatcherFactory::add('Wrench.MaintenanceMode', [
+        'mode' => [
+            'className' => 'Wrench\Mode\Redirect',
+            'config' => [
+                'url' => 'http://example.com/maintenance',
+                'code' => 303,
+                'headers' => ['someHeader' => 'someValue']
+            ]
+        ]
+    ]);
+```
+#### Output Mode
+
+The Output Mode allows you to display the content of a static file as a response for the maintenance status.
+It accepts multiple parameters :
+- **path** : the **absolute** path to the file that will be served
+- **code** : The HTTP status code of the redirect response.
+- **headers** : Array of additional headers to pass along the redirect response. Default to empty.
+
+You can customize all those parameters :
+
+```php
 DispatcherFactory::add('Wrench.MaintenanceMode', [
     'mode' => [
-        'className' => 'Wrench\Mode\Redirect',
+        'className' => 'Wrench\Mode\Output',
         'config' => [
-            'url' => 'http://example.com/maintenance',
-            'code' => 303
+            'path' => '/path/to/my/file',
+            'code' => 404,
             'headers' => ['someHeader' => 'someValue']
         ]
     ]
+]
 ]);
 ```
 
@@ -142,12 +165,13 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
 
 ## To do
 
-- [ ] Add a direct output / View layer mode
+- [x] Add a direct output mode
+- [ ] Add a "View" layer mode
 - [ ] Document how to build a custom mode
 - [x] Implement, test and write about passing a Mode instance
 - [ ] Test and write about the ``when`` and ``for`` options
 
 ## License
 
-Copyright (c) 2015, Yves PIQUEL and licensed under [The MIT License](http://opensource.org/licenses/mit-license.php).
+Copyright (c) 2015, Yves Piquel and licensed under [The MIT License](http://opensource.org/licenses/mit-license.php).
 Please refer to the LICENSE.txt file.
