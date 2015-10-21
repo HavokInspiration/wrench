@@ -31,7 +31,7 @@ require_once 'vendor/cakephp/cakephp/src/basics.php';
 require_once 'vendor/autoload.php';
 
 define('CORE_PATH', $root . DS . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS);
-define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
+define('ROOT', $root . DS . 'tests' . DS . 'test_app');
 define('APP', ROOT . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
 
