@@ -13,33 +13,26 @@ namespace Wrench\Mode;
 
 use Cake\Network\Request;
 use Cake\Network\Response;
+use LogicException;
 
 /**
- * `Redirect` Maintenance Mode.
- * When used, it will perform a redirect to a specific URL with the
- * status code specified.
- *
- * If no URL is provided, a default one will be built with the current base path
- * and pointing to a `maintenance.html` file.
+ * `Output` Maintenance Mode.
+ * When used, it will send the content of the configured file as a response
  */
-class Redirect extends Mode
+class Output extends Mode
 {
-
     /**
      * Default config
      *
      * - `code` : The status code to be sent along with the response.
-     * Should be a code in the 3XX range. Other code range may not work
-     * - `url` : URL where to redirect the request. If no url is provided,
-     * a URL will be built based on the base URL path and pointing to a
-     * "maintenance.html" file (located under /webroot
+     * - `path` : location of the file
      * - `headers` : Additional headers to be set with the response
      *
      * @var array
      */
     protected $_defaultConfig = [
-        'code' => 307,
-        'url' => '',
+        'code' => 503,
+        'path' => '',
         'headers' => []
     ];
 
@@ -51,10 +44,14 @@ class Redirect extends Mode
      */
     public function process(Request $request, Response $response)
     {
-        $url = $this->_getUrl($request);
+        $path = $this->_getPath();
+
+        if (!file_exists($path)) {
+            throw new LogicException(sprintf('The file (path : `%s`) does not exist.', $path));
+        }
 
         $response->statusCode($this->config('code'));
-        $response->location($url);
+        $response->body(file_get_contents($path));
 
         $headers = $this->config('headers');
         if (!empty($headers)) {
@@ -64,22 +61,19 @@ class Redirect extends Mode
     }
 
     /**
-     * Return the URL where to redirect the request.
-     * If no URL is provided, a default one will be built with the current base path
-     * and pointing to a `maintenance.html` file.
+     * Return the path where the file to display is located.
+     * If no path is provided, it is assumed that the file is located in {ROOT}/maintenance.html
      *
-     * @param \Cake\Network\Request $request Request that can be used to get the URL.
-     *
-     * @return string URL where to redirect
+     * @return string File path
      */
-    protected function _getUrl(Request $request)
+    protected function _getPath()
     {
-        $url = $this->config('url');
+        $path = $this->config('path');
 
-        if (empty($url)) {
-            $url = $request->base . '/maintenance.html';
+        if (empty($path)) {
+            $path = ROOT . DS . 'maintenance.html';
         }
 
-        return $url;
+        return $path;
     }
 }

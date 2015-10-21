@@ -17,7 +17,7 @@ use Cake\Network\Request;
 use Cake\TestSuite\TestCase;
 use Wrench\Routing\Filter\MaintenanceModeFilter;
 
-class RedirectTest extends TestCase
+class OutputTest extends TestCase
 {
 
     /**
@@ -30,88 +30,87 @@ class RedirectTest extends TestCase
     }
 
     /**
-     * Test the Redirect filter mode without params
+     * Test the Output filter mode without params
      * @return void
      */
-    public function testRedirectModeNoParams()
-    {
-        Configure::write('Wrench.enable', true);
-
-        $filter = new MaintenanceModeFilter();
-
-        $request = new Request();
-        $request->base = 'http://localhost';
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(307);
-        $response->expects($this->once())
-            ->method('location')
-            ->with('http://localhost/maintenance.html');
-
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
-    }
-
-    /**
-     * Test the Redirect filter mode with params
-     * @return void
-     */
-    public function testRedirectModeCustomParams()
+    public function testOutputModeNoParams()
     {
         Configure::write('Wrench.enable', true);
 
         $filter = new MaintenanceModeFilter([
             'mode' => [
-                'className' => 'Wrench\Mode\Redirect',
-                'config' => [
-                    'code' => 503,
-                    'url' => 'http://www.example.com/maintenance.html'
-                ]
+                'className' => 'Wrench\Mode\Output'
             ]
         ]);
 
         $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location']);
+        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'body']);
         $response->expects($this->once())
             ->method('statusCode')
             ->with(503);
+        $content = file_get_contents(ROOT . DS . 'maintenance.html');
         $response->expects($this->once())
-            ->method('location')
-            ->with('http://www.example.com/maintenance.html');
+            ->method('body')
+            ->with($content);
 
         $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
     }
 
     /**
-     * Test the Redirect filter mode with additional headers
+     * Test the Output filter mode with additional headers
      * @return void
      */
-    public function testMaintenanceModeFilterRedirectHeaders()
+    public function testMaintenanceModeFilterOutputHeaders()
     {
         Configure::write('Wrench.enable', true);
 
         $filter = new MaintenanceModeFilter([
             'mode' => [
-                'className' => 'Wrench\Mode\Redirect',
+                'className' => 'Wrench\Mode\Output',
                 'config' => [
-                    'code' => 503,
-                    'url' => 'http://www.example.com/maintenance.html',
+                    'code' => 404,
                     'headers' => ['someHeader' => 'someValue']
                 ]
             ]
         ]);
 
         $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location', 'header']);
+        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'body', 'header']);
         $response->expects($this->once())
             ->method('statusCode')
-            ->with(503);
+            ->with(404);
+        $content = file_get_contents(ROOT . DS . 'maintenance.html');
         $response->expects($this->once())
-            ->method('location')
-            ->with('http://www.example.com/maintenance.html');
+            ->method('body')
+            ->with($content);
         $response->expects($this->once())
             ->method('header')
             ->with(['someHeader' => 'someValue']);
+
+        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+    }
+
+    /**
+     * Test the Output filter mode with a wrong file path
+     * @return void
+     *
+     * @expectedException \LogicException
+     */
+    public function testOutputModeCustomParams()
+    {
+        Configure::write('Wrench.enable', true);
+
+        $filter = new MaintenanceModeFilter([
+            'mode' => [
+                'className' => 'Wrench\Mode\Output',
+                'config' => [
+                    'path' => ROOT . DS . 'wonky.html'
+                ]
+            ]
+        ]);
+
+        $request = new Request();
+        $response = $this->getMock('Cake\Network\Response');
 
         $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
     }
