@@ -30,7 +30,7 @@ class RedirectTest extends TestCase
     }
 
     /**
-     * Test the Redirect filter mode
+     * Test the Redirect filter mode without params
      * @return void
      */
     public function testRedirectModeNoParams()
@@ -53,7 +53,7 @@ class RedirectTest extends TestCase
     }
 
     /**
-     * Test the Redirect filter mode
+     * Test the Redirect filter mode with params
      * @return void
      */
     public function testRedirectModeCustomParams()

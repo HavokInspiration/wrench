@@ -28,7 +28,7 @@ class Redirect extends Mode
     /**
      * Default config
      *
-     * - `code` : The status code to be sent along with the request.
+     * - `code` : The status code to be sent along with the response.
      * Should be a code in the 3XX range. Other code range may not work
      * - `url` : URL where to redirect the request. If no url is provided,
      * a URL will be built based on the base URL path and pointing to a
