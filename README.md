@@ -1,4 +1,7 @@
-# Maintenance mode plugin for CakePHP
+# Wrench : Maintenance mode plugin for CakePHP 3
+
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
+[![Build Status](https://img.shields.io/travis/HavokInspiration/wrench/master.svg?style=flat-square)](https://travis-ci.org/havokinspiration/wrench)
 
 **This plugin is still under development and should be considered alpha software.**
 
@@ -116,8 +119,8 @@ You can customize all those parameters :
 
 The Output Mode allows you to display the content of a static file as a response for the maintenance status.
 It accepts multiple parameters :
-- **path** : the **absolute** path to the file that will be served
-- **code** : The HTTP status code of the redirect response.
+- **path** : the **absolute** path to the file that will be served. Default to {ROOT}/maintenance.html.
+- **code** : The HTTP status code of the redirect response. Default to 503.
 - **headers** : Array of additional headers to pass along the redirect response. Default to empty.
 
 You can customize all those parameters :
