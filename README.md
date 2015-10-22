@@ -104,16 +104,16 @@ page.
 You can customize all those parameters :
 
 ```php
-    DispatcherFactory::add('Wrench.MaintenanceMode', [
-        'mode' => [
-            'className' => 'Wrench\Mode\Redirect',
-            'config' => [
-                'url' => 'http://example.com/maintenance',
-                'code' => 303,
-                'headers' => ['someHeader' => 'someValue']
-            ]
+DispatcherFactory::add('Wrench.MaintenanceMode', [
+    'mode' => [
+        'className' => 'Wrench\Mode\Redirect',
+        'config' => [
+            'url' => 'http://example.com/maintenance',
+            'code' => 303,
+            'headers' => ['someHeader' => 'someValue']
         ]
-    ]);
+    ]
+]);
 ```
 #### Output Mode
 
@@ -135,7 +135,6 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
             'headers' => ['someHeader' => 'someValue']
         ]
     ]
-]
 ]);
 ```
 
