@@ -20,12 +20,12 @@ class MaintenanceModeTask extends SimpleBakeTask
 {
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public $pathFragment = 'Maintenance/Mode/';
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function name()
     {
@@ -33,7 +33,7 @@ class MaintenanceModeTask extends SimpleBakeTask
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function fileName($name)
     {
@@ -41,7 +41,7 @@ class MaintenanceModeTask extends SimpleBakeTask
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function template()
     {
@@ -49,7 +49,7 @@ class MaintenanceModeTask extends SimpleBakeTask
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * Adds the necessary class suffix and type in the Bake\Test instance responsible
      * of baking tests class files for the maintenance mode
