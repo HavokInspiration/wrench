@@ -165,11 +165,32 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
 ]);
 ```
 
+### Creating a custom mode
+
+If you have special needs, you can create your own maintenance mode.
+To get started quickly, you can use the ``bake`` console tool to generate a skeleton:
+
+```
+bin/cake bake maintenance_mode MyCustomMode
+```
+
+This will generate a ``MyCustomMode`` class file under the ``App\Maintenance\Mode`` namespace (as well as a test file).
+Your skeleton will only contain one method ``process()`` returning a ``\Cake\Network\Response`` object. This is where
+the logic of your maintenance mode goes. You can either make the method return a ``Response`` object which will shortcut
+the request cycle and use the returned ``Response`` object to respond to the request. Any other returned value will make
+the maintenance mode no-op and the request cycle will go on. This is useful if you need to display the maintenance status
+only on specific conditions.
+
+The Mode implements the ``InstanceConfigTrait`` which allows you to easily define default configuration parameters and 
+gives you easy access to them.
+
+You can check out the implemented mode to have some examples.
+
 ## To do
 
 - [x] Add a direct output mode
 - [ ] Add a "View" layer mode
-- [ ] Document how to build a custom mode
+- [x] Document how to build a custom mode
 - [x] Implement, test and write about passing a Mode instance
 - [ ] Test and write about the ``when`` and ``for`` options
 
