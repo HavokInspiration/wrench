@@ -32,10 +32,16 @@ require_once 'vendor/autoload.php';
 
 define('CORE_PATH', $root . DS . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS);
 define('ROOT', $root . DS . 'tests' . DS . 'test_app');
-define('APP', ROOT . 'App' . DS);
+define('APP', ROOT . DS . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
 
 Configure::write('debug', true);
+Configure::write('App', [
+    'namespace' => 'App',
+    'paths' => [
+        'plugins' => [ROOT . 'Plugin' . DS]
+    ]
+]);
 
 Plugin::load('Wrench', [
     'path' => dirname(dirname(__FILE__)) . DS,
