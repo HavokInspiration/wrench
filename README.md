@@ -10,8 +10,9 @@ for your CakePHP website / applications.
 
 ## Requirements
 
-- CakePHP 3
 - PHP 5.4.16
+- CakePHP 3
+- [CakePHP 3 Bake plugin](https://github.com/cakephp/bake)
 
 ## Installation
 
@@ -64,7 +65,7 @@ The plugin is built around the concept of "modes".
 Modes are special classes which will have the task of processing the request and return the proper response
 in order to warn the user that the website / application is undergoing maintenance.
 
-The plugin comes packaged with two maintenance modes : ``Redirect`` and ``Callback``.
+The plugin comes packaged with three maintenance modes : ``Redirect``, ``Output`` and ``Callback``.
 
 You can configure it to use specific modes when adding the Filter to the DispatcherFactory using the ``options`` parameter of the ``DispatcherFactory::add()`` method.
 The array of parameters is required to be of the following form:
