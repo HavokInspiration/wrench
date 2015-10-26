@@ -12,7 +12,10 @@ for your CakePHP website / applications.
 
 - PHP 5.4.16
 - CakePHP 3
-- [CakePHP 3 Bake plugin](https://github.com/cakephp/bake)
+
+## Recommanded packages
+
+- If you want to create your own maintenance mode, you can use the [CakePHP 3 Bake plugin](https://github.com/cakephp/bake)
 
 ## Installation
 
