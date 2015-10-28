@@ -1,4 +1,4 @@
-# Wrench : Maintenance mode plugin for CakePHP 3
+# Wrench : CakePHP 3 Maintenance mode plugin
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
 [![Build Status](https://img.shields.io/travis/HavokInspiration/wrench/master.svg?style=flat-square)](https://travis-ci.org/havokinspiration/wrench)
@@ -190,13 +190,52 @@ gives you easy access to them.
 
 You can check out the implemented mode to have some examples.
 
+### Conditionally applying the maintenance mode
+
+If you need to apply the maintenance mode only for a specific part of your application or in specific conditions, you can use the ``when`` and ``for`` ``DispatcherFilter`` options.
+The ``for`` option lets you match a URL substring and the ``when`` option allows you to register a callable : if the callable returns ``true``, the filter will be applied.
+For instance, if you want to only show the maintenance mode for the blog part of your application, you can register it like this:
+
+DispatcherFactory::add('Wrench.MaintenanceMode', [
+    'mode' => [
+        'className' => 'Wrench\Mode\Output',
+        'config' => [
+            'path' => '/path/to/my/file',
+            'code' => 404,
+            'headers' => ['someHeader' => 'someValue']
+        ]
+    ],
+    'for' => '/blog'
+]);
+
+If you want to filter specific IP addresses to apply the maintenance mode to anyone but you, you can use the ``when`` option:
+
+DispatcherFactory::add('Wrench.MaintenanceMode', [
+    'mode' => [
+        'className' => 'Wrench\Mode\Output',
+        'config' => [
+            'path' => '/path/to/my/file',
+            'code' => 404,
+            'headers' => ['someHeader' => 'someValue']
+        ]
+    ],
+    'when' => function ($request, $response) {
+        $myIp = '1.23.456.789';
+        $ip = $request->clientIp();
+        return $ip !== $myIp;
+    }
+]);
+
+You can of course use both ``for`` and ``when`` options at the same time.
+More details and examples about the ``for`` and ``when`` options in the [CakePHP Cookbook](http://book.cakephp.org/3.0/en/development/dispatch-filters.html#conditionally-applying-filters).
+
 ## To do
 
 - [x] Add a direct output mode
 - [ ] Add a "View" layer mode
 - [x] Document how to build a custom mode
 - [x] Implement, test and write about passing a Mode instance
-- [ ] Test and write about the ``when`` and ``for`` options
+- [x] Test and write about the ``when`` and ``for`` options
 
 ## License
 
