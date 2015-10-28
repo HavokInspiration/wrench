@@ -193,9 +193,10 @@ You can check out the implemented mode to have some examples.
 ### Conditionally applying the maintenance mode
 
 If you need to apply the maintenance mode only for a specific part of your application or in specific conditions, you can use the ``when`` and ``for`` ``DispatcherFilter`` options.
-The ``for`` option lets you match a URL substring and the ``when`` option allows you to register a callable : if the callable returns ``true``, the filter will be applied.
+The ``for`` option lets you match a URL substring and the ``when`` option allows you to register a callable : if the callable returns ``true``, the filter will be applied.  
 For instance, if you want to only show the maintenance mode for the blog part of your application, you can register it like this:
 
+```php
 DispatcherFactory::add('Wrench.MaintenanceMode', [
     'mode' => [
         'className' => 'Wrench\Mode\Output',
@@ -207,9 +208,11 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
     ],
     'for' => '/blog'
 ]);
+```
 
 If you want to filter specific IP addresses to apply the maintenance mode to anyone but you, you can use the ``when`` option:
 
+```php
 DispatcherFactory::add('Wrench.MaintenanceMode', [
     'mode' => [
         'className' => 'Wrench\Mode\Output',
@@ -225,8 +228,10 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
         return $ip !== $myIp;
     }
 ]);
+```
 
 You can of course use both ``for`` and ``when`` options at the same time.
+
 More details and examples about the ``for`` and ``when`` options in the [CakePHP Cookbook](http://book.cakephp.org/3.0/en/development/dispatch-filters.html#conditionally-applying-filters).
 
 ## To do
