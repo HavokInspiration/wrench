@@ -29,11 +29,11 @@ class View extends Mode
      *      - `className` : Fully qualified class name of the View class to use. Default to AppView
      *      - `templatePath` : Path to the template you wish to display (relative to your ``src/Template`` directory).
      *         You can use plugin dot notation.
-     *      - `template` : Template name to use
+     *      - `template` : Template name to use. Default to "template".
      *      - `plugin` : Theme where to find the layout and template
      *      - `theme` : Same thing than plugin
      *      - `layout` : Layout name to use. Default to "default"
-     *      - `layoutPath` : Path to the layout you wish to display (relative to your ``src/Template`` directory).
+     *      - `layoutPath` : Path to the layout you wish to display (relative to your ``src/Template/Layout``directory).
      *         You can use plugin dot notation. Default to "Layout"
      *      All other options are not supported (they might work though)
      * - `headers` : Additional headers to be set with the response

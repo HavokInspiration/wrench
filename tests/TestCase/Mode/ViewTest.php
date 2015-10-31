@@ -80,10 +80,7 @@ class ViewTest extends TestCase
                     'view' => [
                         'templatePath' => 'Maintenance',
                         'layout' => 'maintenance',
-                        'layoutPath' => 'Maintenance',
-                        'viewVars' => [
-                            'sentence' => 'hello world !'
-                        ]
+                        'layoutPath' => 'Maintenance'
                     ]
                 ]
             ]
