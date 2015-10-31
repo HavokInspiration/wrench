@@ -43,6 +43,14 @@ Configure::write('App', [
     ]
 ]);
 
+Configure::write('App', [
+    'namespace' => 'App',
+    'paths' => [
+        'plugins' => [APP . 'Plugin' . DS],
+        'templates' => [APP . 'Template' . DS]
+    ]
+]);
+
 Plugin::load('Wrench', [
     'path' => dirname(dirname(__FILE__)) . DS,
 ]);
