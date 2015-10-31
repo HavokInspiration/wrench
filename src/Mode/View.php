@@ -11,6 +11,7 @@
  */
 namespace Wrench\Mode;
 
+use Cake\Core\Configure;
 use Cake\Network\Request;
 use Cake\Network\Response;
 
@@ -62,12 +63,15 @@ class View extends Mode
      */
     public function process(Request $request, Response $response)
     {
+        $this->_backwardCompatibility();
+
         $className = $this->config('view.className');
         if (empty($className)) {
             $className = 'App\View\AppView';
         }
 
-        $view = new $className($request, $response, null, $this->config('view'));
+        $viewConfig = $this->config('view') ?: [];
+        $view = new $className($request, $response, null, $viewConfig);
         $response->body($view->render());
         $response->statusCode($this->config('code'));
 
@@ -76,5 +80,26 @@ class View extends Mode
             $response->header($headers);
         }
         return $response;
+    }
+
+    /**
+     * Generate correct View constructor parameter key if CakePHP version
+     * is below 3.1 where important changes were introduced regarding naming
+     * Also compensate for a fix that is not existant prior to 3.0.5 in the InstanceConfigTrait
+     *
+     * @return void
+     */
+    protected function _backwardCompatibility()
+    {
+        if ($this->config('view') === null) {
+            $this->config('view', $this->_defaultConfig['view']);
+        }
+
+        if (version_compare(Configure::version(), '3.1.0', '<')) {
+            $config = $this->config('view');
+            $config['view'] = $this->config('view.template');
+            $config['viewPath'] = $this->config('view.templatePath');
+            $this->config('view', $config);
+        }
     }
 }
