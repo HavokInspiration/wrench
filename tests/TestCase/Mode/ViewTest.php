@@ -35,7 +35,7 @@ class ViewTest extends TestCase
     public function tearDown()
     {
         parent::tearDown();
-        Plugin::unload();
+        Plugin::unload('TestPlugin');
         Configure::write('Wrench.enable', false);
     }
 
