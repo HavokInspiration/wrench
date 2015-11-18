@@ -23,7 +23,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Wrench\\": "src"
+            "Wrench\\": "src",
+            "App\\": "tests/test_app/App"
         }
     },
     "autoload-dev": {

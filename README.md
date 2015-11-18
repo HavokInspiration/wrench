@@ -11,7 +11,7 @@ for your CakePHP website / applications.
 ## Requirements
 
 - PHP 5.4.16
-- CakePHP 3
+- CakePHP 3.0.0+ (tested up to 3.1.4)
 
 ## Recommanded packages
 
@@ -169,6 +169,39 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
 ]);
 ```
 
+#### View Mode
+
+The View Mode gives you the ability to use a View to render the maintenance page.  
+This gives you the ability to leverage helpers and the layout / template system of the framework.  
+It accepts multiple parameters :
+- **code** : The HTTP status code of the redirect response. Default to 503.
+- **headers** : Array of additional headers to pass along the redirect response. Default to empty.
+- **view** : Array of parameters to pass to the View class constructor. Only the following options are supported :
+    - **className** : Fully qualified class name of the View class to use. Default to AppView
+    - **templatePath** : Path to the template you wish to display (relative to your ``src/Template`` directory). You can use plugin dot notation.
+    - **template** : Template name to use. Default to "maintenance".
+    - **plugin** : Theme where to find the layout and template
+    - **theme** : Same thing than plugin
+    - **layout** : Layout name to use. Default to "default"
+    - **layoutPath** : Path to the layout you wish to display (relative to your ``src/Template`` directory). You can use plugin dot notation. Default to "Layout"
+
+```php
+// Will load a template ``src/Template/Maintenance/maintenance.ctp``
+// in a layout ``src/Template/Layout/Maintenance/maintenance.ctp``
+DispatcherFactory::add('Wrench.MaintenanceMode', [
+    'mode' => [
+        'className' => 'Wrench\Mode\View',
+        'config' => [
+            'view' => [
+                 'templatePath' => 'Maintenance',
+                 'layout' => 'maintenance',
+                 'layoutPath' => 'Maintenance'
+            ]
+        ]
+    ]
+]);
+```
+
 ### Creating a custom mode
 
 If you have special needs, you can create your own maintenance mode.
@@ -233,14 +266,6 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
 You can of course use both ``for`` and ``when`` options at the same time.
 
 More details and examples about the ``for`` and ``when`` options in the [CakePHP Cookbook](http://book.cakephp.org/3.0/en/development/dispatch-filters.html#conditionally-applying-filters).
-
-## To do
-
-- [x] Add a direct output mode
-- [ ] Add a "View" layer mode
-- [x] Document how to build a custom mode
-- [x] Implement, test and write about passing a Mode instance
-- [x] Test and write about the ``when`` and ``for`` options
 
 ## License
 
