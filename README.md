@@ -11,7 +11,7 @@ for your CakePHP website / applications.
 ## Requirements
 
 - PHP 5.4.16
-- CakePHP 3.0.0+ (tested up to 3.1.2)
+- CakePHP 3.0.0+ (tested up to 3.1.4)
 
 ## Recommanded packages
 
