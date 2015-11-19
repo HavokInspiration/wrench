@@ -3,8 +3,6 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
 [![Build Status](https://img.shields.io/travis/HavokInspiration/wrench/master.svg?style=flat-square)](https://travis-ci.org/havokinspiration/wrench)
 
-**This plugin is still under development and should be considered alpha software.**
-
 Wrench is a CakePHP 3.X plugin that aims to provide an easy way to implement a **Maintenance Mode**
 for your CakePHP website / applications.
 
@@ -266,6 +264,27 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
 You can of course use both ``for`` and ``when`` options at the same time.
 
 More details and examples about the ``for`` and ``when`` options in the [CakePHP Cookbook](http://book.cakephp.org/3.0/en/development/dispatch-filters.html#conditionally-applying-filters).
+
+## Contributing
+
+If you find a bug or would like to ask for a feature, please use the [GitHub issue tracker](https://github.com/HavokInspiration/wrench/issues).  
+If you would like to submit a fix or a feature, please fork the repository and [submit a pull request](https://github.com/HavokInspiration/wrench/pulls).  
+
+### Coding standards
+
+Since this plugin is tangled with features from the CakePHP Core and to provide consistency, it follows the [CakePHP coding standards](http://book.cakephp.org/3.0/en/contributing/cakephp-coding-conventions.html).  
+When submitting a pull request, make sure your code follows this standards.  
+You can check it by installing the code sniffer :
+
+```
+composer require cakephp/cakephp-codesniffer:dev-master
+```
+
+And then running the sniff :
+
+```
+./vendor/bin/phpcs -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests
+```
 
 ## License
 
