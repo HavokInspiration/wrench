@@ -66,7 +66,7 @@ The plugin is built around the concept of "modes".
 Modes are special classes which will have the task of processing the request and return the proper response
 in order to warn the user that the website / application is undergoing maintenance.
 
-The plugin comes packaged with three maintenance modes : ``Redirect``, ``Output`` and ``Callback``.
+The plugin comes packaged with four maintenance modes : ``Redirect``, ``Output``, ``Callback`` and ``View``.
 
 You can configure it to use specific modes when adding the Filter to the DispatcherFactory using the ``options`` parameter of the ``DispatcherFactory::add()`` method.
 The array of parameters is required to be of the following form:
