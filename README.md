@@ -169,8 +169,8 @@ DispatcherFactory::add('Wrench.MaintenanceMode', [
 
 #### View Mode
 
-The View Mode gives you the ability to use a View to render the maintenance page.  
-This gives you the ability to leverage helpers and the layout / template system of the framework.  
+The View Mode gives you the ability to use a View to render the maintenance page.
+This gives you the ability to leverage helpers and the layout / template system of the framework.
 It accepts multiple parameters :
 - **code** : The HTTP status code of the redirect response. Default to 503.
 - **headers** : Array of additional headers to pass along the redirect response. Default to empty.
@@ -216,7 +216,7 @@ the request cycle and use the returned ``Response`` object to respond to the req
 the maintenance mode no-op and the request cycle will go on. This is useful if you need to display the maintenance status
 only on specific conditions.
 
-The Mode implements the ``InstanceConfigTrait`` which allows you to easily define default configuration parameters and 
+The Mode implements the ``InstanceConfigTrait`` which allows you to easily define default configuration parameters and
 gives you easy access to them.
 
 You can check out the implemented mode to have some examples.
@@ -224,7 +224,7 @@ You can check out the implemented mode to have some examples.
 ### Conditionally applying the maintenance mode
 
 If you need to apply the maintenance mode only for a specific part of your application or in specific conditions, you can use the ``when`` and ``for`` ``DispatcherFilter`` options.
-The ``for`` option lets you match a URL substring and the ``when`` option allows you to register a callable : if the callable returns ``true``, the filter will be applied.  
+The ``for`` option lets you match a URL substring and the ``when`` option allows you to register a callable : if the callable returns ``true``, the filter will be applied.
 For instance, if you want to only show the maintenance mode for the blog part of your application, you can register it like this:
 
 ```php
@@ -267,13 +267,13 @@ More details and examples about the ``for`` and ``when`` options in the [CakePHP
 
 ## Contributing
 
-If you find a bug or would like to ask for a feature, please use the [GitHub issue tracker](https://github.com/HavokInspiration/wrench/issues).  
-If you would like to submit a fix or a feature, please fork the repository and [submit a pull request](https://github.com/HavokInspiration/wrench/pulls).  
+If you find a bug or would like to ask for a feature, please use the [GitHub issue tracker](https://github.com/HavokInspiration/wrench/issues).
+If you would like to submit a fix or a feature, please fork the repository and [submit a pull request](https://github.com/HavokInspiration/wrench/pulls).
 
 ### Coding standards
 
-Since this plugin is tangled with features from the CakePHP Core and to provide consistency, it follows the [CakePHP coding standards](http://book.cakephp.org/3.0/en/contributing/cakephp-coding-conventions.html).  
-When submitting a pull request, make sure your code follows this standards.  
+Since this plugin is tangled with features from the CakePHP Core and to provide consistency, it follows the [CakePHP coding standards](http://book.cakephp.org/3.0/en/contributing/cakephp-coding-conventions.html).
+When submitting a pull request, make sure your code follows these standards.
 You can check it by installing the code sniffer :
 
 ```
@@ -288,5 +288,5 @@ And then running the sniff :
 
 ## License
 
-Copyright (c) 2015, Yves Piquel and licensed under [The MIT License](http://opensource.org/licenses/mit-license.php).
+Copyright (c) 2015 - 2016, Yves Piquel and licensed under [The MIT License](http://opensource.org/licenses/mit-license.php).
 Please refer to the LICENSE.txt file.
