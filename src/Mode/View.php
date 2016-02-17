@@ -16,8 +16,9 @@ use Cake\Network\Request;
 use Cake\Network\Response;
 
 /**
- * `Output` Maintenance Mode.
- * When used, it will send the content of the configured file as a response
+ * `View` Maintenance Mode.
+ * When used, it will render the defined View and use it as the body of the
+ * response to return
  */
 class View extends Mode
 {
@@ -58,8 +59,8 @@ class View extends Mode
     /**
      * {@inheritDoc}
      *
-     * Will set the location where to redirect the request with the specified code
-     * and optional additional headers.
+     * Will render the view and use the content as the body of the response.
+     * It will also set the specified HTTP code and optional additional headers.
      */
     public function process(Request $request, Response $response)
     {
