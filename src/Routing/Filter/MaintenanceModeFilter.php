@@ -56,14 +56,14 @@ class MaintenanceModeFilter extends DispatcherFilter
     {
         parent::__construct($config);
 
-        $mode = $this->config('mode');
+        $mode = $this->_config['mode'];
         if (is_array($mode)) {
-            $className = $this->config('mode.className');
+            $className = $this->_config['mode']['className'];
             if (empty($className)) {
                 throw new MissingModeException(['mode' => '']);
             }
 
-            $config = $this->config('mode.config');
+            $config = $this->_config['mode']['config'];
             $filterConfig = !empty($config) ? $config : [];
             $this->mode($className, $filterConfig);
             return;

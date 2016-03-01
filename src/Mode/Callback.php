@@ -33,7 +33,7 @@ class Callback extends Mode
      */
     public function process(Request $request, Response $response)
     {
-        $callback = $this->config('callback');
+        $callback = $this->_config['callback'];
         if (!is_callable($callback)) {
             throw new InvalidArgumentException('You must pass a valid callable as the `callback` argument.');
         }

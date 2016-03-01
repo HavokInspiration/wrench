@@ -66,17 +66,17 @@ class View extends Mode
     {
         $this->_backwardCompatibility();
 
-        $className = $this->config('view.className');
+        $className = $this->_config['view']['className'];
         if (empty($className)) {
             $className = 'App\View\AppView';
         }
 
-        $viewConfig = $this->config('view') ?: [];
+        $viewConfig = $this->_config['view'] ?: [];
         $view = new $className($request, $response, null, $viewConfig);
         $response->body($view->render());
-        $response->statusCode($this->config('code'));
+        $response->statusCode($this->_config['code']);
 
-        $headers = $this->config('headers');
+        $headers = $this->_config['headers'];
         if (!empty($headers)) {
             $response->header($headers);
         }
@@ -92,15 +92,15 @@ class View extends Mode
      */
     protected function _backwardCompatibility()
     {
-        if ($this->config('view') === null) {
-            $this->config('view', $this->_defaultConfig['view']);
+        if ($this->_config['view'] === null) {
+            $this->_config['view'] = $this->_defaultConfig['view'];
         }
 
         if (version_compare(Configure::version(), '3.1.0', '<')) {
-            $config = $this->config('view');
-            $config['view'] = $this->config('view.template');
-            $config['viewPath'] = $this->config('view.templatePath');
-            $this->config('view', $config);
+            $config = $this->_config['view'];
+            $config['view'] = $this->_config['view']['template'];
+            $config['viewPath'] = $this->_config['view']['templatePath'];
+            $this->_config['view'] = $config;
         }
     }
 }

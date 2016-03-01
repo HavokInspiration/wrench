@@ -50,10 +50,10 @@ class Output extends Mode
             throw new LogicException(sprintf('The file (path : `%s`) does not exist.', $path));
         }
 
-        $response->statusCode($this->config('code'));
+        $response->statusCode($this->_config['code']);
         $response->body(file_get_contents($path));
 
-        $headers = $this->config('headers');
+        $headers = $this->_config['headers'];
         if (!empty($headers)) {
             $response->header($headers);
         }
@@ -68,7 +68,7 @@ class Output extends Mode
      */
     protected function _getPath()
     {
-        $path = $this->config('path');
+        $path = $this->_config['path'];
 
         if (empty($path)) {
             $path = ROOT . DS . 'maintenance.html';

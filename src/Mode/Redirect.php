@@ -53,10 +53,10 @@ class Redirect extends Mode
     {
         $url = $this->_getUrl($request);
 
-        $response->statusCode($this->config('code'));
+        $response->statusCode($this->_config['code']);
         $response->location($url);
 
-        $headers = $this->config('headers');
+        $headers = $this->_config['headers'];
         if (!empty($headers)) {
             $response->header($headers);
         }
@@ -74,7 +74,7 @@ class Redirect extends Mode
      */
     protected function _getUrl(Request $request)
     {
-        $url = $this->config('url');
+        $url = $this->_config['url'];
 
         if (empty($url)) {
             $url = $request->base . '/maintenance.html';
