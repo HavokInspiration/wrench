@@ -12,8 +12,8 @@
 namespace Wrench\Mode;
 
 use Cake\Core\InstanceConfigTrait;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Base class that Maintenance mode should extend
@@ -51,9 +51,9 @@ abstract class Mode
      * Maintenance modes should extend and implement this method to return the proper
      * response to the user.
      *
-     * @param \Cake\Network\Request $request Current request being intercepted
-     * @param \Cake\Network\Response $response Current response being sent
-     * @return \Cake\Network\Response|null The response that will be sent
+     * @param \Psr\Http\Message\ServerRequestInterface $request Current request being intercepted
+     * @param \Psr\Http\Message\ResponseInterface $response Current response being sent
+     * @return \Psr\Http\Message\ResponseInterface|null The response that will be sent
      */
-    abstract public function process(Request $request, Response $response);
+    abstract public function process(ServerRequestInterface $request, ResponseInterface $response);
 }

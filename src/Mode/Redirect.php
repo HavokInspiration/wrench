@@ -11,8 +11,9 @@
  */
 namespace Wrench\Mode;
 
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * `Redirect` Maintenance Mode.
@@ -32,7 +33,8 @@ class Redirect extends Mode
      * Should be a code in the 3XX range. Other code range may not work
      * - `url` : URL where to redirect the request. If no url is provided,
      * a URL will be built based on the base URL path and pointing to a
-     * "maintenance.html" file (located under /webroot
+     * "maintenance.html" file (located under /webroot). This parameter can be
+     * a instance of UriInterface or a string
      * - `headers` : Additional headers to be set with the response
      *
      * @var array
@@ -49,18 +51,12 @@ class Redirect extends Mode
      * Will set the location where to redirect the request with the specified code
      * and optional additional headers.
      */
-    public function process(Request $request, Response $response)
+    public function process(ServerRequestInterface $request, ResponseInterface $response)
     {
         $url = $this->_getUrl($request);
+        $headers = $this->config('headers');
 
-        $response->statusCode($this->_config['code']);
-        $response->location($url);
-
-        $headers = $this->_config['headers'];
-        if (!empty($headers)) {
-            $response->header($headers);
-        }
-        return $response;
+        return new RedirectResponse($url, $this->config('code'), $headers);
     }
 
     /**
@@ -68,16 +64,16 @@ class Redirect extends Mode
      * If no URL is provided, a default one will be built with the current base path
      * and pointing to a `maintenance.html` file.
      *
-     * @param \Cake\Network\Request $request Request that can be used to get the URL.
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request that can be used to get the URL.
      *
-     * @return string URL where to redirect
+     * @return string|\Psr\Http\Message\UriInterface URL where to redirect
      */
-    protected function _getUrl(Request $request)
+    protected function _getUrl(ServerRequestInterface $request)
     {
         $url = $this->_config['url'];
 
         if (empty($url)) {
-            $url = $request->base . '/maintenance.html';
+            $url = $request->getUri()->withPath('/maintenance.html');
         }
 
         return $url;

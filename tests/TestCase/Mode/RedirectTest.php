@@ -12,10 +12,10 @@
 namespace Wrench\Test\TestCase\Mode;
 
 use Cake\Core\Configure;
-use Cake\Event\Event;
-use Cake\Network\Request;
+use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
-use Wrench\Routing\Filter\MaintenanceModeFilter;
+use Wrench\Middleware\MaintenanceMiddleware;
+use Zend\Diactoros\Response;
 
 class RedirectTest extends TestCase
 {
@@ -36,20 +36,19 @@ class RedirectTest extends TestCase
     public function testRedirectModeNoParams()
     {
         Configure::write('Wrench.enable', true);
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware();
+        $res = $middleware($request, $response, $next);
 
-        $filter = new MaintenanceModeFilter();
-
-        $request = new Request();
-        $request->base = 'http://localhost';
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(307);
-        $response->expects($this->once())
-            ->method('location')
-            ->with('http://localhost/maintenance.html');
-
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+        $this->assertEquals(307, $res->getStatusCode());
+        $this->assertEquals('http://localhost/maintenance.html', $res->getHeaderLine('location'));
     }
 
     /**
@@ -59,8 +58,16 @@ class RedirectTest extends TestCase
     public function testRedirectModeCustomParams()
     {
         Configure::write('Wrench.enable', true);
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
 
-        $filter = new MaintenanceModeFilter([
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\Redirect',
                 'config' => [
@@ -70,16 +77,9 @@ class RedirectTest extends TestCase
             ]
         ]);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(503);
-        $response->expects($this->once())
-            ->method('location')
-            ->with('http://www.example.com/maintenance.html');
-
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+        $res = $middleware($request, $response, $next);
+        $this->assertEquals(503, $res->getStatusCode());
+        $this->assertEquals('http://www.example.com/maintenance.html', $res->getHeaderLine('location'));
     }
 
     /**
@@ -89,30 +89,30 @@ class RedirectTest extends TestCase
     public function testMaintenanceModeFilterRedirectHeaders()
     {
         Configure::write('Wrench.enable', true);
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
 
-        $filter = new MaintenanceModeFilter([
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\Redirect',
                 'config' => [
                     'code' => 503,
                     'url' => 'http://www.example.com/maintenance.html',
-                    'headers' => ['someHeader' => 'someValue']
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
                 ]
             ]
         ]);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'location', 'header']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(503);
-        $response->expects($this->once())
-            ->method('location')
-            ->with('http://www.example.com/maintenance.html');
-        $response->expects($this->once())
-            ->method('header')
-            ->with(['someHeader' => 'someValue']);
-
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+        $res = $middleware($request, $response, $next);
+        $this->assertEquals(503, $res->getStatusCode());
+        $this->assertEquals('http://www.example.com/maintenance.html', $res->getHeaderLine('location'));
+        $this->assertEquals('someValue', $res->getHeaderLine('someHeader'));
+        $this->assertEquals('additionalValue', $res->getHeaderLine('additionalHeader'));
     }
 }
