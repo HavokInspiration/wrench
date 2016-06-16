@@ -11,9 +11,10 @@
  */
 namespace Wrench\Mode;
 
-use Cake\Network\Request;
-use Cake\Network\Response;
 use LogicException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Stream;
 
 /**
  * `Output` Maintenance Mode.
@@ -42,7 +43,7 @@ class Output extends Mode
      * Will set the location where to redirect the request with the specified code
      * and optional additional headers.
      */
-    public function process(Request $request, Response $response)
+    public function process(ServerRequestInterface $request, ResponseInterface $response)
     {
         $path = $this->_getPath();
 
@@ -50,12 +51,15 @@ class Output extends Mode
             throw new LogicException(sprintf('The file (path : `%s`) does not exist.', $path));
         }
 
-        $response->statusCode($this->_config['code']);
-        $response->body(file_get_contents($path));
+        $stream = new Stream(fopen($path, 'rb'));
+        $response = $response->withBody($stream);
+        $response = $response->withStatus($this->_config['code']);
 
         $headers = $this->_config['headers'];
         if (!empty($headers)) {
-            $response->header($headers);
+            foreach ($headers as $headerName => $headerValue) {
+                $response = $response->withHeader($headerName, $headerValue);
+            }
         }
         return $response;
     }

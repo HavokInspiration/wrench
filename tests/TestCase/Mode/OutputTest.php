@@ -13,9 +13,11 @@ namespace Wrench\Test\TestCase\Mode;
 
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Http\ServerRequestFactory;
 use Cake\Network\Request;
 use Cake\TestSuite\TestCase;
-use Wrench\Routing\Filter\MaintenanceModeFilter;
+use Wrench\Middleware\MaintenanceMiddleware;
+use Zend\Diactoros\Response;
 
 class OutputTest extends TestCase
 {
@@ -36,24 +38,25 @@ class OutputTest extends TestCase
     public function testOutputModeNoParams()
     {
         Configure::write('Wrench.enable', true);
-
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\Output'
             ]
         ]);
+        $res = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'body']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(503);
+        $this->assertEquals(503, $res->getStatusCode());
+
         $content = file_get_contents(ROOT . DS . 'maintenance.html');
-        $response->expects($this->once())
-            ->method('body')
-            ->with($content);
-
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+        $this->assertEquals($res->getBody(), $content);
     }
 
     /**
@@ -63,8 +66,15 @@ class OutputTest extends TestCase
     public function testMaintenanceModeFilterOutputHeaders()
     {
         Configure::write('Wrench.enable', true);
-
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\Output',
                 'config' => [
@@ -73,25 +83,19 @@ class OutputTest extends TestCase
                 ]
             ]
         ]);
+        $res = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode', 'body', 'header']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
+        $this->assertEquals(404, $res->getStatusCode());
+
         $content = file_get_contents(ROOT . DS . 'maintenance.html');
-        $response->expects($this->once())
-            ->method('body')
-            ->with($content);
-        $response->expects($this->once())
-            ->method('header')
-            ->with(['someHeader' => 'someValue']);
+        $this->assertEquals($res->getBody(), $content);
 
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+        $this->assertEquals('someValue', $res->getHeaderLine('someHeader'));
     }
 
     /**
-     * Test the Output filter mode with a wrong file path
+     * Test the Output filter mode with a wrong file path : it should throw an
+     * exception
      * @return void
      *
      * @expectedException \LogicException
@@ -99,8 +103,15 @@ class OutputTest extends TestCase
     public function testOutputModeCustomParams()
     {
         Configure::write('Wrench.enable', true);
-
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\Output',
                 'config' => [
@@ -108,10 +119,6 @@ class OutputTest extends TestCase
                 ]
             ]
         ]);
-
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response');
-
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+        $middleware($request, $response, $next);
     }
 }
