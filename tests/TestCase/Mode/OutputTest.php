@@ -12,9 +12,7 @@
 namespace Wrench\Test\TestCase\Mode;
 
 use Cake\Core\Configure;
-use Cake\Event\Event;
 use Cake\Http\ServerRequestFactory;
-use Cake\Network\Request;
 use Cake\TestSuite\TestCase;
 use Wrench\Middleware\MaintenanceMiddleware;
 use Zend\Diactoros\Response;
