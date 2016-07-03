@@ -45,10 +45,10 @@ class RedirectTest extends TestCase
             return $res;
         };
         $middleware = new MaintenanceMiddleware();
-        $res = $middleware($request, $response, $next);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $this->assertEquals(307, $res->getStatusCode());
-        $this->assertEquals('http://localhost/maintenance.html', $res->getHeaderLine('location'));
+        $this->assertEquals(307, $middlewareResponse->getStatusCode());
+        $this->assertEquals('http://localhost/maintenance.html', $middlewareResponse->getHeaderLine('location'));
     }
 
     /**
@@ -77,9 +77,9 @@ class RedirectTest extends TestCase
             ]
         ]);
 
-        $res = $middleware($request, $response, $next);
-        $this->assertEquals(503, $res->getStatusCode());
-        $this->assertEquals('http://www.example.com/maintenance.html', $res->getHeaderLine('location'));
+        $middlewareResponse = $middleware($request, $response, $next);
+        $this->assertEquals(503, $middlewareResponse->getStatusCode());
+        $this->assertEquals('http://www.example.com/maintenance.html', $middlewareResponse->getHeaderLine('location'));
     }
 
     /**
@@ -109,10 +109,10 @@ class RedirectTest extends TestCase
             ]
         ]);
 
-        $res = $middleware($request, $response, $next);
-        $this->assertEquals(503, $res->getStatusCode());
-        $this->assertEquals('http://www.example.com/maintenance.html', $res->getHeaderLine('location'));
-        $this->assertEquals('someValue', $res->getHeaderLine('someHeader'));
-        $this->assertEquals('additionalValue', $res->getHeaderLine('additionalHeader'));
+        $middlewareResponse = $middleware($request, $response, $next);
+        $this->assertEquals(503, $middlewareResponse->getStatusCode());
+        $this->assertEquals('http://www.example.com/maintenance.html', $middlewareResponse->getHeaderLine('location'));
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
+        $this->assertEquals('additionalValue', $middlewareResponse->getHeaderLine('additionalHeader'));
     }
 }

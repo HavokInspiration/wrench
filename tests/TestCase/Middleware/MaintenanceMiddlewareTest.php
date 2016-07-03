@@ -12,8 +12,8 @@
 namespace Wrench\Test\TestCase\Routing\Filter;
 
 use Cake\TestSuite\TestCase;
-use Wrench\Mode\Redirect;
 use Wrench\Middleware\MaintenanceMiddleware;
+use Wrench\Mode\Redirect;
 
 /**
  * Maintenance Mode filter test.

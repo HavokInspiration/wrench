@@ -61,10 +61,10 @@ class CallbackTest extends TestCase
                 ]
             ]
         ]);
-        $res = $middleware($request, $response, $next);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $this->assertEquals('Some content from a callback', (string) $res->getBody());
-        $this->assertEquals(503, $res->getStatusCode());
+        $this->assertEquals('Some content from a callback', (string)$middlewareResponse->getBody());
+        $this->assertEquals(503, $middlewareResponse->getStatusCode());
     }
 
     /**
@@ -93,6 +93,6 @@ class CallbackTest extends TestCase
             ]
         ]);
 
-        $res = $middleware($request, $response, $next);
+        $middleware($request, $response, $next);
     }
 }

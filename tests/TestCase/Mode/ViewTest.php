@@ -13,7 +13,6 @@ namespace Wrench\Test\TestCase\Mode;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Event\Event;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use Wrench\Middleware\MaintenanceMiddleware;
@@ -60,10 +59,10 @@ class ViewTest extends TestCase
                 'className' => 'Wrench\Mode\View'
             ]
         ]);
-        $res = $middleware($request, $response, $next);
+        $middlewareResponse = $middleware($request, $response, $next);
 
         $expected = "Layout Header\nThis is an element<div>test</div>This app is undergoing maintenanceLayout Footer";
-        $this->assertEquals($expected, (string) $res->getBody());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
     }
 
     /**
@@ -95,10 +94,10 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
-        $res = $middleware($request, $response, $next);
+        $middlewareResponse = $middleware($request, $response, $next);
 
         $expected = "Maintenance Header\nI'm in a sub-directoryMaintenance Footer";
-        $this->assertEquals($expected, (string) $res->getBody());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
     }
 
     /**
@@ -132,10 +131,10 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
-        $res = $middleware($request, $response, $next);
+        $middlewareResponse = $middleware($request, $response, $next);
 
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, (string) $res->getBody());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
 
         $middleware = new MaintenanceMiddleware([
             'mode' => [
@@ -152,10 +151,10 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
-        $res = $middleware($request, $response, $next);
+        $middlewareResponse = $middleware($request, $response, $next);
 
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, (string) $res->getBody());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
 
         $middleware = new MaintenanceMiddleware([
             'mode' => [
@@ -171,9 +170,9 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
-        $res = $middleware($request, $response, $next);
+        $middlewareResponse = $middleware($request, $response, $next);
 
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, (string) $res->getBody());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
     }
 }

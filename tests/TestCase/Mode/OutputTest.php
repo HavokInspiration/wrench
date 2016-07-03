@@ -81,14 +81,14 @@ class OutputTest extends TestCase
                 ]
             ]
         ]);
-        $res = $middleware($request, $response, $next);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $this->assertEquals(404, $res->getStatusCode());
+        $this->assertEquals(404, $middlewareResponse->getStatusCode());
 
         $content = file_get_contents(ROOT . DS . 'maintenance.html');
-        $this->assertEquals($res->getBody(), $content);
+        $this->assertEquals($middlewareResponse->getBody(), $content);
 
-        $this->assertEquals('someValue', $res->getHeaderLine('someHeader'));
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
     }
 
     /**
