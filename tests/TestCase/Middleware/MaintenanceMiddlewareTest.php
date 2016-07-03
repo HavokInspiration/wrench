@@ -11,16 +11,14 @@
  */
 namespace Wrench\Test\TestCase\Routing\Filter;
 
-use Cake\Event\Event;
-use Cake\Network\Request;
 use Cake\TestSuite\TestCase;
 use Wrench\Mode\Redirect;
-use Wrench\Routing\Filter\MaintenanceModeFilter;
+use Wrench\Middleware\MaintenanceMiddleware;
 
 /**
  * Maintenance Mode filter test.
  */
-class MaintenanceModeFilterTest extends TestCase
+class MaintenanceMiddlewareTest extends TestCase
 {
 
     /**
@@ -30,10 +28,10 @@ class MaintenanceModeFilterTest extends TestCase
      */
     public function testMaintenanceModeFilterNoParams()
     {
-        $filter = new MaintenanceModeFilter();
-        $this->assertEquals('Wrench\Mode\Redirect', $filter->config('mode.className'));
-        $this->assertEquals([], $filter->config('mode.config'));
-        $this->assertInstanceOf('Wrench\Mode\Redirect', $filter->mode());
+        $middleware = new MaintenanceMiddleware();
+        $this->assertEquals('Wrench\Mode\Redirect', $middleware->config('mode.className'));
+        $this->assertEquals([], $middleware->config('mode.config'));
+        $this->assertInstanceOf('Wrench\Mode\Redirect', $middleware->mode());
     }
 
     /**
@@ -44,19 +42,19 @@ class MaintenanceModeFilterTest extends TestCase
      */
     public function testMaintenanceModeFilterModeInstance()
     {
-        $filter = new MaintenanceModeFilter([
+        $middleware = new MaintenanceMiddleware([
             'mode' => new Redirect([
                 'url' => 'http://example.com/maintenance/'
             ])
         ]);
 
-        $this->assertInstanceOf('Wrench\Mode\Redirect', $filter->mode());
+        $this->assertInstanceOf('Wrench\Mode\Redirect', $middleware->mode());
 
         $expected = [
             'code' => 307,
             'url' => 'http://example.com/maintenance/',
             'headers' => []
         ];
-        $this->assertEquals($expected, $filter->mode()->config());
+        $this->assertEquals($expected, $middleware->mode()->config());
     }
 }
