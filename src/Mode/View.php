@@ -12,13 +12,20 @@
 namespace Wrench\Mode;
 
 use Cake\Core\Configure;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\RequestTransformer;
+use Cake\Http\ResponseTransformer;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Stream;
 
 /**
  * `View` Maintenance Mode.
+<<<<<<< HEAD
  * When used, it will render the defined View and use it as the body of the
  * response to return
+=======
+ * When used, it will send the content of the configured file as a response
+>>>>>>> The "View" maintenance mode is now PSR-7 compatible
  */
 class View extends Mode
 {
@@ -62,45 +69,30 @@ class View extends Mode
      * Will render the view and use the content as the body of the response.
      * It will also set the specified HTTP code and optional additional headers.
      */
-    public function process(Request $request, Response $response)
+    public function process(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $this->_backwardCompatibility();
-
         $className = $this->_config['view']['className'];
         if (empty($className)) {
             $className = 'App\View\AppView';
         }
 
         $viewConfig = $this->_config['view'] ?: [];
-        $view = new $className($request, $response, null, $viewConfig);
-        $response->body($view->render());
-        $response->statusCode($this->_config['code']);
+        $view = new $className(
+            RequestTransformer::toCake($request),
+            ResponseTransformer::toCake($response),
+            null,
+            $viewConfig
+        );
+
+        $stream = new Stream(fopen('php://memory', 'r+'));
+        $stream->write($view->render());
+        $response = $response->withBody($stream);
+        $response = $response->withStatus($this->_config['code']);
 
         $headers = $this->_config['headers'];
         if (!empty($headers)) {
-            $response->header($headers);
+            $response = $response->header($headers);
         }
         return $response;
-    }
-
-    /**
-     * Generate correct View constructor parameter key if CakePHP version
-     * is below 3.1 where important changes were introduced regarding naming
-     * Also compensate for a fix that is not existant prior to 3.0.5 in the InstanceConfigTrait
-     *
-     * @return void
-     */
-    protected function _backwardCompatibility()
-    {
-        if ($this->_config['view'] === null) {
-            $this->_config['view'] = $this->_defaultConfig['view'];
-        }
-
-        if (version_compare(Configure::version(), '3.1.0', '<')) {
-            $config = $this->_config['view'];
-            $config['view'] = $this->_config['view']['template'];
-            $config['viewPath'] = $this->_config['view']['templatePath'];
-            $this->_config['view'] = $config;
-        }
     }
 }

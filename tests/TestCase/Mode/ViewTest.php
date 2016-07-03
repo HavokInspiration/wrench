@@ -14,9 +14,10 @@ namespace Wrench\Test\TestCase\Mode;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
-use Cake\Network\Request;
+use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
-use Wrench\Routing\Filter\MaintenanceModeFilter;
+use Wrench\Middleware\MaintenanceMiddleware;
+use Zend\Diactoros\Response;
 
 class ViewTest extends TestCase
 {
@@ -46,22 +47,23 @@ class ViewTest extends TestCase
     public function testViewModeNoParams()
     {
         Configure::write('Wrench.enable', true);
-
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View'
             ]
         ]);
+        $res = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(503);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Layout Header\nThis is an element<div>test</div>This app is undergoing maintenanceLayout Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string) $res->getBody());
     }
 
     /**
@@ -72,7 +74,15 @@ class ViewTest extends TestCase
     {
         Configure::write('Wrench.enable', true);
 
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View',
                 'config' => [
@@ -85,16 +95,10 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
+        $res = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Maintenance Header\nI'm in a sub-directoryMaintenance Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string) $res->getBody());
     }
 
     /**
@@ -105,7 +109,15 @@ class ViewTest extends TestCase
     {
         Configure::write('Wrench.enable', true);
 
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View',
                 'config' => [
@@ -120,18 +132,12 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
+        $res = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string) $res->getBody());
 
-        $filter = new MaintenanceModeFilter([
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View',
                 'config' => [
@@ -146,18 +152,12 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
+        $res = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string) $res->getBody());
 
-        $filter = new MaintenanceModeFilter([
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View',
                 'config' => [
@@ -171,15 +171,9 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
+        $res = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string) $res->getBody());
     }
 }
