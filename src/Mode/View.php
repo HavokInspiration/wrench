@@ -89,10 +89,7 @@ class View extends Mode
         $response = $response->withBody($stream);
         $response = $response->withStatus($this->_config['code']);
 
-        $headers = $this->_config['headers'];
-        if (!empty($headers)) {
-            $response = $response->header($headers);
-        }
+        $response = $this->addHeaders($response);
         return $response;
     }
 }

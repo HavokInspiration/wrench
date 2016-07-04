@@ -56,6 +56,7 @@ class CallbackTest extends TestCase
                         $stream->write($string);
                         $response = $response->withBody($stream);
                         $response = $response->withStatus(503);
+                        $response = $response->withHeader('someHeader', 'someValue');
                         return $response;
                     }
                 ]
@@ -65,6 +66,7 @@ class CallbackTest extends TestCase
 
         $this->assertEquals('Some content from a callback', (string)$middlewareResponse->getBody());
         $this->assertEquals(503, $middlewareResponse->getStatusCode());
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
     }
 
     /**

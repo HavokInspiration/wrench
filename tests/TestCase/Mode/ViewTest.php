@@ -56,13 +56,18 @@ class ViewTest extends TestCase
         };
         $middleware = new MaintenanceMiddleware([
             'mode' => [
-                'className' => 'Wrench\Mode\View'
+                'className' => 'Wrench\Mode\View',
+                'config' => [
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
+                ]
             ]
         ]);
         $middlewareResponse = $middleware($request, $response, $next);
 
         $expected = "Layout Header\nThis is an element<div>test</div>This app is undergoing maintenanceLayout Footer";
         $this->assertEquals($expected, (string)$middlewareResponse->getBody());
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
+        $this->assertEquals('additionalValue', $middlewareResponse->getHeaderLine('additionalHeader'));
     }
 
     /**
@@ -90,7 +95,8 @@ class ViewTest extends TestCase
                         'templatePath' => 'Maintenance',
                         'layout' => 'maintenance',
                         'layoutPath' => 'Maintenance'
-                    ]
+                    ],
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
                 ]
             ]
         ]);
@@ -98,6 +104,8 @@ class ViewTest extends TestCase
 
         $expected = "Maintenance Header\nI'm in a sub-directoryMaintenance Footer";
         $this->assertEquals($expected, (string)$middlewareResponse->getBody());
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
+        $this->assertEquals('additionalValue', $middlewareResponse->getHeaderLine('additionalHeader'));
     }
 
     /**
@@ -147,7 +155,8 @@ class ViewTest extends TestCase
                         'layout' => 'maintenance',
                         'theme' => 'TestPlugin',
                         'layoutPath' => 'Maintenance',
-                    ]
+                    ],
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
                 ]
             ]
         ]);
@@ -166,7 +175,8 @@ class ViewTest extends TestCase
                         'templatePath' => 'Maintenance',
                         'layout' => 'TestPlugin.maintenance',
                         'layoutPath' => 'Maintenance',
-                    ]
+                    ],
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
                 ]
             ]
         ]);
@@ -174,5 +184,7 @@ class ViewTest extends TestCase
 
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
         $this->assertEquals($expected, (string)$middlewareResponse->getBody());
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
+        $this->assertEquals('additionalValue', $middlewareResponse->getHeaderLine('additionalHeader'));
     }
 }

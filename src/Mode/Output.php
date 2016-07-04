@@ -55,12 +55,7 @@ class Output extends Mode
         $response = $response->withBody($stream);
         $response = $response->withStatus($this->_config['code']);
 
-        $headers = $this->_config['headers'];
-        if (!empty($headers)) {
-            foreach ($headers as $headerName => $headerValue) {
-                $response = $response->withHeader($headerName, $headerValue);
-            }
-        }
+        $response = $this->addHeaders($response);
         return $response;
     }
 

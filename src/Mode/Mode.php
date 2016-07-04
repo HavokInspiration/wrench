@@ -56,4 +56,22 @@ abstract class Mode
      * @return \Psr\Http\Message\ResponseInterface|null The response that will be sent
      */
     abstract public function process(ServerRequestInterface $request, ResponseInterface $response);
+
+    /**
+     * Add the headers configured in the current mode to the response.
+     *
+     * @param \Psr\Http\Message\ResponseInterface $response Current response being sent
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function addHeaders(ResponseInterface $response)
+    {
+        $headers = $this->_config['headers'];
+        if (!empty($headers)) {
+            foreach ($headers as $headerName => $headerValue) {
+                $response = $response->withHeader($headerName, $headerValue);
+            }
+        }
+
+        return $response;
+    }
 }
