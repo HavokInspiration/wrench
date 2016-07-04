@@ -11,9 +11,9 @@
  */
 namespace Wrench\Mode;
 
-use Cake\Network\Request;
-use Cake\Network\Response;
 use InvalidArgumentException;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * `Callback` Maintenance Mode.
@@ -31,7 +31,7 @@ class Callback extends Mode
      * Will try to call the callback pass as parameter
      * @throw \InvalidArgumentException if the callback parameter is not a proper callable.
      */
-    public function process(Request $request, Response $response)
+    public function process(ServerRequestInterface $request, ResponseInterface $response)
     {
         $callback = $this->_config['callback'];
         if (!is_callable($callback)) {

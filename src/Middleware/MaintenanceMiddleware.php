@@ -9,26 +9,26 @@
  * @link          http://github.com/HavokInspiration/wrench
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace Wrench\Routing\Filter;
+namespace Wrench\Middleware;
 
 use Cake\Core\Configure;
-use Cake\Event\Event;
-use Cake\Network\Response;
-use Cake\Routing\DispatcherFilter;
+use Cake\Core\InstanceConfigTrait;
+use Psr\Http\Message\ResponseInterface;
 use Wrench\Mode\Exception\MissingModeException;
 use Wrench\Mode\Mode;
 
 /**
- * Dispatcher filter responsible of intercepting request to
+ * Middleware responsible of intercepting request to
  * deal with the application being under maintenance
  */
-class MaintenanceModeFilter extends DispatcherFilter
+class MaintenanceMiddleware
 {
+    use InstanceConfigTrait;
 
     /**
-     * Configuration of the mode for this instance of the filter
+     * Configuration of the mode for this instance of the middleware
      *
-     * @var \Wrench\Mode\ModeInterface
+     * @var \Wrench\Mode\Mode
      */
     protected $_mode;
 
@@ -54,9 +54,9 @@ class MaintenanceModeFilter extends DispatcherFilter
      */
     public function __construct($config = [])
     {
-        parent::__construct($config);
-
+        $this->config($config);
         $mode = $this->_config['mode'];
+
         if (is_array($mode)) {
             $className = $this->_config['mode']['className'];
             if (empty($className)) {
@@ -64,14 +64,37 @@ class MaintenanceModeFilter extends DispatcherFilter
             }
 
             $config = $this->_config['mode']['config'];
-            $filterConfig = !empty($config) ? $config : [];
-            $this->mode($className, $filterConfig);
+            $middlewareConfig = !empty($config) ? $config : [];
+            $this->mode($className, $middlewareConfig);
             return;
         }
 
         if ($mode instanceof Mode) {
             $this->mode($mode);
         }
+    }
+
+    /**
+     * Serve assets if the path matches one.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param \Psr\Http\Message\ResponseInterface $response The response.
+     * @param callable $next Callback to invoke the next middleware.
+     * @return \Psr\Http\Message\ResponseInterface A response
+     */
+    public function __invoke($request, $response, $next)
+    {
+        if (!Configure::read('Wrench.enable')) {
+            return $next($request, $response);
+        }
+
+        $response = $this->mode()->process($request, $response);
+
+        if ($response instanceof ResponseInterface) {
+            return $response;
+        }
+
+        return $next($request, $response);
     }
 
     /**
@@ -101,28 +124,5 @@ class MaintenanceModeFilter extends DispatcherFilter
         }
 
         return $this->_mode = $mode;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return \Cake\Network\Response|null
-     */
-    public function beforeDispatch(Event $event)
-    {
-        if (!Configure::read('Wrench.enable')) {
-            return null;
-        }
-
-        $request = $event->data['request'];
-        $response = $event->data['response'];
-        $response = $this->mode()->process($request, $response);
-
-        if ($response instanceof Response) {
-            $event->stopPropagation();
-            return $response;
-        }
-
-        return null;
     }
 }

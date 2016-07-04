@@ -12,11 +12,11 @@
 namespace Wrench\Test\TestCase\Mode;
 
 use Cake\Core\Configure;
-use Cake\Event\Event;
-use Cake\Network\Request;
-use Cake\Network\Response;
+use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
-use Wrench\Routing\Filter\MaintenanceModeFilter;
+use Wrench\Middleware\MaintenanceMiddleware;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Stream;
 
 class CallbackTest extends TestCase
 {
@@ -37,26 +37,36 @@ class CallbackTest extends TestCase
     public function testMaintenanceModeCallback()
     {
         Configure::write('Wrench.enable', true);
-
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\Callback',
                 'config' => [
                     'callback' => function ($request, $response) {
-                        $response->body('This is from a callback');
-                        $response->statusCode(503);
+                        $string = 'Some content from a callback';
+
+                        $stream = new Stream(fopen('php://memory', 'r+'));
+                        $stream->write($string);
+                        $response = $response->withBody($stream);
+                        $response = $response->withStatus(503);
+                        $response = $response->withHeader('someHeader', 'someValue');
                         return $response;
                     }
                 ]
             ]
         ]);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = new Response();
-
-        $response = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
-        $this->assertEquals('This is from a callback', $response->body());
-        $this->assertEquals(503, $response->statusCode());
+        $this->assertEquals('Some content from a callback', (string)$middlewareResponse->getBody());
+        $this->assertEquals(503, $middlewareResponse->getStatusCode());
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
     }
 
     /**
@@ -68,8 +78,15 @@ class CallbackTest extends TestCase
     public function testMaintenanceModeCallbackException()
     {
         Configure::write('Wrench.enable', true);
-
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\Callback',
                 'config' => [
@@ -78,9 +95,6 @@ class CallbackTest extends TestCase
             ]
         ]);
 
-        $request = new Request();
-        $response = new Response();
-
-        $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
+        $middleware($request, $response, $next);
     }
 }

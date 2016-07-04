@@ -14,8 +14,8 @@
         "source": "https://github.com/HavokInspiration/wrench"
     },
     "require": {
-        "php": ">=5.4.16",
-        "cakephp/cakephp": "~3.0"
+        "php": ">=5.5.9",
+        "cakephp/cakephp": "dev-3.next as 3.3.0-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
@@ -23,14 +23,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Wrench\\": "src",
-            "App\\": "tests/test_app/App"
+            "Wrench\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Wrench\\Test\\": "tests",
-            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests",
+            "App\\": "tests/test_app/App"
         }
     }
 }

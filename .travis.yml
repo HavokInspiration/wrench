@@ -1,10 +1,9 @@
 language: php
 
 php:
-  - 5.4
+  - 7.0
   - 5.5
   - 5.6
-  - 7.0
 
 sudo: false
 
@@ -25,13 +24,9 @@ matrix:
     - php: 7.0
       env: CODECOVERAGE=1 DEFAULT=0
 
-    - php: 5.4
-      env: PREFER_LOWEST=1
-
 before_script:
   - composer self-update
-  - sh -c "if [ '$PREFER_LOWEST' != '1' ]; then composer install --prefer-source --no-interaction; fi"
-  - sh -c "if [ '$PREFER_LOWEST' = '1' ]; then composer update --prefer-source --no-interaction --prefer-lowest --prefer-stable; fi"
+  - composer install --prefer-source --no-interaction
 
   - sh -c "if [ '$PHPCS' = '1' ]; then composer require cakephp/cakephp-codesniffer:dev-master; fi"
 
@@ -41,7 +36,7 @@ before_script:
 script:
   - sh -c "if [ '$DEFAULT' = '1' ]; then phpunit --stderr; fi"
   - sh -c "if [ '$PHPCS' = '1' ]; then ./vendor/bin/phpcs -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi"
-  - sh -c "if [ '$CODECOVERAGE' = '1' ]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=clover.xml || true; fi"
+  - sh -c "if [ '$CODECOVERAGE' = '1' ]; then vendor/bin/phpunit --coverage-clover=clover.xml || true; fi"
   - sh -c "if [ '$CODECOVERAGE' = '1' ]; then wget -O codecov.sh https://codecov.io/bash; fi"
   - sh -c "if [ '$CODECOVERAGE' = '1' ]; then bash codecov.sh; fi"
 

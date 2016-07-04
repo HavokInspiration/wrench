@@ -13,10 +13,10 @@ namespace Wrench\Test\TestCase\Mode;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Event\Event;
-use Cake\Network\Request;
+use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
-use Wrench\Routing\Filter\MaintenanceModeFilter;
+use Wrench\Middleware\MaintenanceMiddleware;
+use Zend\Diactoros\Response;
 
 class ViewTest extends TestCase
 {
@@ -46,22 +46,28 @@ class ViewTest extends TestCase
     public function testViewModeNoParams()
     {
         Configure::write('Wrench.enable', true);
-
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
-                'className' => 'Wrench\Mode\View'
+                'className' => 'Wrench\Mode\View',
+                'config' => [
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
+                ]
             ]
         ]);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(503);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Layout Header\nThis is an element<div>test</div>This app is undergoing maintenanceLayout Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
+        $this->assertEquals('additionalValue', $middlewareResponse->getHeaderLine('additionalHeader'));
     }
 
     /**
@@ -72,7 +78,15 @@ class ViewTest extends TestCase
     {
         Configure::write('Wrench.enable', true);
 
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View',
                 'config' => [
@@ -81,20 +95,17 @@ class ViewTest extends TestCase
                         'templatePath' => 'Maintenance',
                         'layout' => 'maintenance',
                         'layoutPath' => 'Maintenance'
-                    ]
+                    ],
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
                 ]
             ]
         ]);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Maintenance Header\nI'm in a sub-directoryMaintenance Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
+        $this->assertEquals('additionalValue', $middlewareResponse->getHeaderLine('additionalHeader'));
     }
 
     /**
@@ -105,7 +116,15 @@ class ViewTest extends TestCase
     {
         Configure::write('Wrench.enable', true);
 
-        $filter = new MaintenanceModeFilter([
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View',
                 'config' => [
@@ -120,18 +139,12 @@ class ViewTest extends TestCase
                 ]
             ]
         ]);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
 
-        $filter = new MaintenanceModeFilter([
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View',
                 'config' => [
@@ -142,22 +155,17 @@ class ViewTest extends TestCase
                         'layout' => 'maintenance',
                         'theme' => 'TestPlugin',
                         'layoutPath' => 'Maintenance',
-                    ]
+                    ],
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
                 ]
             ]
         ]);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
 
-        $filter = new MaintenanceModeFilter([
+        $middleware = new MaintenanceMiddleware([
             'mode' => [
                 'className' => 'Wrench\Mode\View',
                 'config' => [
@@ -167,19 +175,16 @@ class ViewTest extends TestCase
                         'templatePath' => 'Maintenance',
                         'layout' => 'TestPlugin.maintenance',
                         'layoutPath' => 'Maintenance',
-                    ]
+                    ],
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
                 ]
             ]
         ]);
+        $middlewareResponse = $middleware($request, $response, $next);
 
-        $request = new Request();
-        $response = $this->getMock('Cake\Network\Response', ['statusCode']);
-        $response->expects($this->once())
-            ->method('statusCode')
-            ->with(404);
-
-        $result = $filter->beforeDispatch(new Event('name', null, ['request' => $request, 'response' => $response]));
         $expected = "Plugin Maintenance Header\nI'm in a plugin sub-directoryPlugin Maintenance Footer";
-        $this->assertEquals($expected, $result->body());
+        $this->assertEquals($expected, (string)$middlewareResponse->getBody());
+        $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
+        $this->assertEquals('additionalValue', $middlewareResponse->getHeaderLine('additionalHeader'));
     }
 }

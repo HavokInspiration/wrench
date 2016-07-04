@@ -32,18 +32,21 @@ class MaintenanceModeTaskTest extends TestCase
     {
         parent::setUp();
         $this->_compareBasePath = Plugin::path('Wrench') . 'tests' . DS . 'comparisons' . DS . 'Maintenance' . DS . 'Mode' . DS;
-        $io = $this->getMock('Cake\Console\ConsoleIo', [], [], '', false);
 
-        $this->Task = $this->getMock(
-            'Wrench\Shell\Task\MaintenanceModeTask',
-            ['in', 'err', 'createFile', '_stop'],
-            [$io]
-        );
-        $this->Task->Test = $this->getMock(
-            'Bake\Shell\Task\TestTask',
-            ['in', 'err', 'createFile', '_stop'],
-            [$io]
-        );
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->Task = $this->getMockBuilder('Wrench\Shell\Task\MaintenanceModeTask')
+            ->setMethods(['in', 'err', 'createFile', '_stop'])
+            ->setConstructorArgs([$io])
+            ->getMock();
+
+        $this->Task->Test = $this->getMockBuilder('Bake\Shell\Task\TestTask')
+            ->setMethods(['in', 'err', 'createFile', '_stop'])
+            ->setConstructorArgs([$io])
+            ->getMock();
+
         $this->Task->BakeTemplate = new BakeTemplateTask($io);
         $this->Task->BakeTemplate->initialize();
         $this->Task->BakeTemplate->interactive = false;
