@@ -1,9 +1,9 @@
 language: php
 
 php:
+  - 7.0
   - 5.5
   - 5.6
-  - 7.0
 
 sudo: false
 
@@ -21,6 +21,9 @@ matrix:
     - php: 7.0
       env: PHPCS=1 DEFAULT=0
 
+    - php: 7.0
+      env: CODECOVERAGE=1 DEFAULT=0
+
 before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction
@@ -33,7 +36,7 @@ before_script:
 script:
   - sh -c "if [ '$DEFAULT' = '1' ]; then phpunit --stderr; fi"
   - sh -c "if [ '$PHPCS' = '1' ]; then ./vendor/bin/phpcs -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests; fi"
-  - sh -c "if [ '$CODECOVERAGE' = '1' ]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=clover.xml || true; fi"
+  - sh -c "if [ '$CODECOVERAGE' = '1' ]; then vendor/bin/phpunit --coverage-clover=clover.xml || true; fi"
   - sh -c "if [ '$CODECOVERAGE' = '1' ]; then wget -O codecov.sh https://codecov.io/bash; fi"
   - sh -c "if [ '$CODECOVERAGE' = '1' ]; then bash codecov.sh; fi"
 
