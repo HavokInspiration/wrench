@@ -252,12 +252,12 @@ Keep in mind that the ``ResponseInterface`` you need to return is PSR-7 complian
 and how to interact with it on [the PHP-FIG website](http://www.php-fig.org/psr/psr-7/)
 as well as [on the CakePHP documentation](https://github.com/cakephp/docs/blob/3.3/en/controllers/middleware.rst#psr7-requests-and-responses)
 
-You can check out the implemented mode to have some examples.
+You can check out the implemented modes to have some examples.
 
 ### Conditionally applying the maintenance mode
 
 Conditionally applying a middleware is currently not possible with the current implementation of the Middleware stack in CakePHP 3.3.
-A documentation on how to do this will be added when and if this feature is implemented.
+A documentation on how to do this will be added when and if this feature is implemented in the core.
 
 ## Contributing
 
