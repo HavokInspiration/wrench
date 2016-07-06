@@ -1,7 +1,7 @@
 # Wrench : CakePHP 3 Maintenance mode plugin
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
-[![Build Status](https://img.shields.io/travis/HavokInspiration/wrench/master.svg?style=flat-square)](https://travis-ci.org/havokinspiration/wrench)
+[![Build Status](https://travis-ci.org/HavokInspiration/wrench.svg?branch=master)](https://travis-ci.org/HavokInspiration/wrench)
 [![codecov.io](https://codecov.io/github/HavokInspiration/wrench/coverage.svg?branch=master)](https://codecov.io/github/HavokInspiration/wrench?branch=master)
 
 Wrench is a CakePHP 3.X plugin that aims to provide an easy way to implement a **Maintenance Mode**
