@@ -9,12 +9,20 @@ for your CakePHP website / applications.
 
 ## Requirements
 
-- PHP 5.4.16
-- CakePHP 3.0.0+ (tested up to 3.1.4)
+- PHP >= 5.5.9
+- CakePHP >= 3.3.0
 
-## Recommanded packages
+## About the plugin versions
 
-- If you want to create your own maintenance mode, you can use the [CakePHP 3 Bake plugin](https://github.com/cakephp/bake)
+| CakePHP < 3.3.0 | CakePHP >= 3.3.0 |
+| --------------- | ---------------- |
+| Wrench 1.X | Wrench 2.X (not tagged yet) |
+| PHP >= 5.4.16 | PHP >= 5.5.9 |
+| Uses CakePHP DispatcherFilter mecanism | Uses CakePHP Middleware Stack and PSR-7 Request / Response implementation |
+
+## Recommanded package
+
+If you want to create your own maintenance mode, you can use the [CakePHP 3 Bake plugin](https://github.com/cakephp/bake)
 
 ## Installation
 
@@ -42,19 +50,34 @@ Plugin::load('Wrench');
 
 ## Usage
 
-The plugin is built around a **DispatcherFilter** that will intercept the current request to
+The plugin is built around a **Middleware** that will intercept the current request to
 return a customized response to warn the user that the website / app is undergoing maintenance.
 
-To use the Maintenance mode, you need to add the **MaintenanceModeFilter** to the
-**DispatcherFactory** in your bootstrap file using the following statement:
+To use the Maintenance mode, you need to add the **MaintenanceMiddleware** to the
+**MiddlewareStack** in your Application file by adding the following elements :
 
 ```php
-DispatcherFactory::add('Wrench.MaintenanceMode');
+use Wrench\Middleware\MaintenanceMiddleware;
+
+// ...
+
+public function middleware($middleware)
+{
+    $middleware->push(new MaintenanceMiddleware());
+    
+    // Other middleware configuration
+    
+    return $middleware;
+}
 ```
+
+Since this Middleware is here to prevent the application from responding, it should be the first to be treated by the Dispatcher and should,
+as such, be configured as the first one, either by adding it in the beginning of the method with the ``push()`` method or using the 
+``prepend()`` method anywhere you want in your middlewares configuration.
 
 By default, only adding it with the previous line will make use of the **Redirect** mode. More informations on maintenance Modes below.
 
-The Filter is only active when the Configure key ``Wrench.enable`` is equal to ``true``.
+The Middleware is only active when the Configure key ``Wrench.enable`` is equal to ``true``.
 To enable the maintenance mode, use the following statement in your **bootstrap.php** file :
 
 ```php
@@ -69,24 +92,24 @@ in order to warn the user that the website / application is undergoing maintenan
 
 The plugin comes packaged with four maintenance modes : ``Redirect``, ``Output``, ``Callback`` and ``View``.
 
-You can configure it to use specific modes when adding the Filter to the DispatcherFactory using the ``options`` parameter of the ``DispatcherFactory::add()`` method.
-The array of parameters is required to be of the following form:
+You can configure it to use specific modes when adding the Middleware to the Middleware stack by passing parameters to the Middleware constructor.
+The will result in a call looking like this :
 
 ```php
-[
+$middleware->push(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Full\Namespace\To\Mode',
         'config' => [
             // Specific configuration parameters for the Mode
         ]
     ]
-]
+]);
 ```
 
 If you need it, you can directly pass an instance of a ``Mode`` to the ``mode`` array key of the filter's config:
 
 ```php
-DispatcherFactory::add('Wrench.MaintenanceMode', [
+$middleware->push(new MaintenanceMiddleware([
     'mode' => new \Wrench\Mode\Redirect([
         'url' => 'http://example.com/maintenance'
     ])
@@ -107,7 +130,7 @@ page.
 You can customize all those parameters :
 
 ```php
-DispatcherFactory::add('Wrench.MaintenanceMode', [
+$middleware->push(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Wrench\Mode\Redirect',
         'config' => [
@@ -129,7 +152,7 @@ It accepts multiple parameters :
 You can customize all those parameters :
 
 ```php
-DispatcherFactory::add('Wrench.MaintenanceMode', [
+$middleware->push(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Wrench\Mode\Output',
         'config' => [
@@ -147,20 +170,25 @@ The Callback Mode gives you the ability to use a custom callable.
 It accepts only one parameter ``callback`` which should be a callable.
 The callable will take two arguments :
 
-- **request** : A ``\Cake\Network\Request`` instance
-- **response** : A ``\Cake\Network\Response`` instance
+- **request** : A ``\Psr\Http\Message\ServerRequestInterface`` instance
+- **response** : A ``\Psr\Http\Message\ResponseInterface`` instance
 
-The callable is expected to return a ``\Cake\Network\Response`` if the request is to be
+The callable is expected to return a ``\Psr\Http\Message\ResponseInterface`` if the request is to be
 stopped.
 
 ```php
-DispatcherFactory::add('Wrench.MaintenanceMode', [
+$middleware->push(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Wrench\Mode\Callback',
         'config' => [
             'callback' => function($request, $response) {
-                $response->body('This is from a callback');
-                $response->statusCode(503);
+                $string = 'Some content from a callback';
+
+                $stream = new Stream(fopen('php://memory', 'r+'));
+                $stream->write($string);
+                $response = $response->withBody($stream);
+                $response = $response->withStatus(503);
+                $response = $response->withHeader('someHeader', 'someValue');
                 return $response;
             }
         ]
@@ -187,7 +215,7 @@ It accepts multiple parameters :
 ```php
 // Will load a template ``src/Template/Maintenance/maintenance.ctp``
 // in a layout ``src/Template/Layout/Maintenance/maintenance.ctp``
-DispatcherFactory::add('Wrench.MaintenanceMode', [
+$middleware->push(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Wrench\Mode\View',
         'config' => [
@@ -211,60 +239,25 @@ bin/cake bake maintenance_mode MyCustomMode
 ```
 
 This will generate a ``MyCustomMode`` class file under the ``App\Maintenance\Mode`` namespace (as well as a test file).
-Your skeleton will only contain one method ``process()`` returning a ``\Cake\Network\Response`` object. This is where
-the logic of your maintenance mode goes. You can either make the method return a ``Response`` object which will shortcut
-the request cycle and use the returned ``Response`` object to respond to the request. Any other returned value will make
+Your skeleton will only contain one method ``process()`` returning a ``\Psr\Http\Message\ResponseInterface`` object. This is where
+the logic of your maintenance mode goes. You can either make the method return a ``ResponseInterface`` object which will shortcut
+the request cycle and use the returned ``ResponseInterface`` object to respond to the request. Any other returned value will make
 the maintenance mode no-op and the request cycle will go on. This is useful if you need to display the maintenance status
 only on specific conditions.
 
 The Mode implements the ``InstanceConfigTrait`` which allows you to easily define default configuration parameters and
 gives you easy access to them.
 
-You can check out the implemented mode to have some examples.
+Keep in mind that the ``ResponseInterface`` you need to return is PSR-7 compliant. You can get more details about the implementation
+and how to interact with it on [the PHP-FIG website](http://www.php-fig.org/psr/psr-7/)
+as well as [on the CakePHP documentation](https://github.com/cakephp/docs/blob/3.3/en/controllers/middleware.rst#psr7-requests-and-responses)
+
+You can check out the implemented modes to have some examples.
 
 ### Conditionally applying the maintenance mode
 
-If you need to apply the maintenance mode only for a specific part of your application or in specific conditions, you can use the ``when`` and ``for`` ``DispatcherFilter`` options.
-The ``for`` option lets you match a URL substring and the ``when`` option allows you to register a callable : if the callable returns ``true``, the filter will be applied.
-For instance, if you want to only show the maintenance mode for the blog part of your application, you can register it like this:
-
-```php
-DispatcherFactory::add('Wrench.MaintenanceMode', [
-    'mode' => [
-        'className' => 'Wrench\Mode\Output',
-        'config' => [
-            'path' => '/path/to/my/file',
-            'code' => 404,
-            'headers' => ['someHeader' => 'someValue']
-        ]
-    ],
-    'for' => '/blog'
-]);
-```
-
-If you want to filter specific IP addresses to apply the maintenance mode to anyone but you, you can use the ``when`` option:
-
-```php
-DispatcherFactory::add('Wrench.MaintenanceMode', [
-    'mode' => [
-        'className' => 'Wrench\Mode\Output',
-        'config' => [
-            'path' => '/path/to/my/file',
-            'code' => 404,
-            'headers' => ['someHeader' => 'someValue']
-        ]
-    ],
-    'when' => function ($request, $response) {
-        $myIp = '1.23.456.789';
-        $ip = $request->clientIp();
-        return $ip !== $myIp;
-    }
-]);
-```
-
-You can of course use both ``for`` and ``when`` options at the same time.
-
-More details and examples about the ``for`` and ``when`` options in the [CakePHP Cookbook](http://book.cakephp.org/3.0/en/development/dispatch-filters.html#conditionally-applying-filters).
+Conditionally applying a middleware is currently not possible with the current implementation of the Middleware stack in CakePHP 3.3.
+A documentation on how to do this will be added when and if this feature is implemented in the core.
 
 ## Contributing
 
