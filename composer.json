@@ -15,7 +15,7 @@
     },
     "require": {
         "php": ">=5.5.9",
-        "cakephp/cakephp": "dev-3.next as 3.3.0-dev"
+        "cakephp/cakephp": "~3.3"
     },
     "require-dev": {
         "phpunit/phpunit": "*",

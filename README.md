@@ -63,7 +63,7 @@ use Wrench\Middleware\MaintenanceMiddleware;
 
 public function middleware($middleware)
 {
-    $middleware->push(new MaintenanceMiddleware());
+    $middleware->add(new MaintenanceMiddleware());
     
     // Other middleware configuration
     
@@ -96,7 +96,7 @@ You can configure it to use specific modes when adding the Middleware to the Mid
 The will result in a call looking like this :
 
 ```php
-$middleware->push(new MaintenanceMiddleware([
+$middleware->add(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Full\Namespace\To\Mode',
         'config' => [
@@ -109,7 +109,7 @@ $middleware->push(new MaintenanceMiddleware([
 If you need it, you can directly pass an instance of a ``Mode`` to the ``mode`` array key of the filter's config:
 
 ```php
-$middleware->push(new MaintenanceMiddleware([
+$middleware->add(new MaintenanceMiddleware([
     'mode' => new \Wrench\Mode\Redirect([
         'url' => 'http://example.com/maintenance'
     ])
@@ -130,7 +130,7 @@ page.
 You can customize all those parameters :
 
 ```php
-$middleware->push(new MaintenanceMiddleware([
+$middleware->add(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Wrench\Mode\Redirect',
         'config' => [
@@ -152,7 +152,7 @@ It accepts multiple parameters :
 You can customize all those parameters :
 
 ```php
-$middleware->push(new MaintenanceMiddleware([
+$middleware->add(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Wrench\Mode\Output',
         'config' => [
@@ -177,7 +177,7 @@ The callable is expected to return a ``\Psr\Http\Message\ResponseInterface`` if 
 stopped.
 
 ```php
-$middleware->push(new MaintenanceMiddleware([
+$middleware->add(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Wrench\Mode\Callback',
         'config' => [
@@ -215,7 +215,7 @@ It accepts multiple parameters :
 ```php
 // Will load a template ``src/Template/Maintenance/maintenance.ctp``
 // in a layout ``src/Template/Layout/Maintenance/maintenance.ctp``
-$middleware->push(new MaintenanceMiddleware([
+$middleware->add(new MaintenanceMiddleware([
     'mode' => [
         'className' => 'Wrench\Mode\View',
         'config' => [
