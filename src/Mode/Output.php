@@ -56,6 +56,7 @@ class Output extends Mode
         $response = $response->withStatus($this->_config['code']);
 
         $response = $this->addHeaders($response);
+
         return $response;
     }
 

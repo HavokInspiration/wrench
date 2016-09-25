@@ -57,6 +57,7 @@ class CallbackTest extends TestCase
                         $response = $response->withBody($stream);
                         $response = $response->withStatus(503);
                         $response = $response->withHeader('someHeader', 'someValue');
+
                         return $response;
                     }
                 ]

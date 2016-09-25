@@ -66,6 +66,7 @@ class MaintenanceMiddleware
             $config = $this->_config['mode']['config'];
             $middlewareConfig = !empty($config) ? $config : [];
             $this->mode($className, $middlewareConfig);
+
             return;
         }
 
