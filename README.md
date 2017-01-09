@@ -16,7 +16,7 @@ for your CakePHP website / applications.
 
 | CakePHP < 3.3.0 | CakePHP >= 3.3.0 |
 | --------------- | ---------------- |
-| Wrench 1.X | Wrench 2.X (not tagged yet) |
+| Wrench 1.X | Wrench 2.X |
 | PHP >= 5.4.16 | PHP >= 5.5.9 |
 | Uses CakePHP DispatcherFilter mecanism | Uses CakePHP Middleware Stack and PSR-7 Request / Response implementation |
 
@@ -282,5 +282,5 @@ And then running the sniff :
 
 ## License
 
-Copyright (c) 2015 - 2016, Yves Piquel and licensed under [The MIT License](http://opensource.org/licenses/mit-license.php).
+Copyright (c) 2015 - 2017, Yves Piquel and licensed under [The MIT License](http://opensource.org/licenses/mit-license.php).
 Please refer to the LICENSE.txt file.
