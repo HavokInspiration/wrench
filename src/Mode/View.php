@@ -20,12 +20,9 @@ use Zend\Diactoros\Stream;
 
 /**
  * `View` Maintenance Mode.
-<<<<<<< HEAD
+ *
  * When used, it will render the defined View and use it as the body of the
  * response to return
-=======
- * When used, it will send the content of the configured file as a response
->>>>>>> The "View" maintenance mode is now PSR-7 compatible
  */
 class View extends Mode
 {
