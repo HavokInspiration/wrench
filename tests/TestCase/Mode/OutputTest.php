@@ -36,6 +36,7 @@ class OutputTest extends TestCase
     public function testOutputModeNoParams()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
@@ -64,6 +65,7 @@ class OutputTest extends TestCase
     public function testMaintenanceModeFilterOutputHeaders()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
@@ -101,6 +103,7 @@ class OutputTest extends TestCase
     public function testOutputModeCustomParams()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
