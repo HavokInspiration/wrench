@@ -37,6 +37,7 @@ class CallbackTest extends TestCase
     public function testMaintenanceModeCallback()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
@@ -79,6 +80,7 @@ class CallbackTest extends TestCase
     public function testMaintenanceModeCallbackException()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
