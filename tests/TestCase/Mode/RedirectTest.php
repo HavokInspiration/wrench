@@ -36,6 +36,7 @@ class RedirectTest extends TestCase
     public function testRedirectModeNoParams()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
@@ -58,6 +59,7 @@ class RedirectTest extends TestCase
     public function testRedirectModeCustomParams()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
@@ -89,6 +91,7 @@ class RedirectTest extends TestCase
     public function testMaintenanceModeFilterRedirectHeaders()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
