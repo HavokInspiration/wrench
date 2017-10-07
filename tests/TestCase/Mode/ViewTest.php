@@ -46,6 +46,7 @@ class ViewTest extends TestCase
     public function testViewModeNoParams()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
@@ -77,6 +78,7 @@ class ViewTest extends TestCase
     public function testViewModeCustomParams()
     {
         Configure::write('Wrench.enable', true);
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
 
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
@@ -115,7 +117,8 @@ class ViewTest extends TestCase
     public function testViewModeCustomParamsPlugin()
     {
         Configure::write('Wrench.enable', true);
-
+        Configure::write('Wrench.whitelist', ['127.0.0.1']);
+        
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
