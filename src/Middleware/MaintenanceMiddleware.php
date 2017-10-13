@@ -24,13 +24,6 @@ use Wrench\Mode\Mode;
 class MaintenanceMiddleware
 {
     use InstanceConfigTrait;
-
-    /**
-     * IP whitelist for bypassing maintenance mode.
-     *
-     * @var mixed
-     */
-    public $whitelist;
     
     /**
      * Configuration of the mode for this instance of the middleware
@@ -51,7 +44,8 @@ class MaintenanceMiddleware
         'mode' => [
             'className' => 'Wrench\Mode\Redirect',
             'config' => []
-        ]
+        ],
+        'whitelist' => []
     ];
 
     /**
@@ -62,7 +56,6 @@ class MaintenanceMiddleware
     public function __construct($config = [])
     {
         $this->config($config);
-        $this->whitelist = Configure::read('Wrench.whitelist');
         $mode = $this->_config['mode'];
 
         if (is_array($mode)) {
@@ -147,9 +140,8 @@ class MaintenanceMiddleware
             return false;
         }
 
-        foreach ($this->whitelist as $bypassIp) {
+        foreach ($this->_config['whitelist'] as $bypassIp) {
             if ($ip === $bypassIp) {
-                Configure::write('Wrench.bypass', $ip);
 
                 return true;
             }
