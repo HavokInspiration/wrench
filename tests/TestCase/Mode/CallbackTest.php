@@ -37,7 +37,6 @@ class CallbackTest extends TestCase
     public function testMaintenanceModeCallback()
     {
         Configure::write('Wrench.enable', true);
-        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
@@ -72,15 +71,14 @@ class CallbackTest extends TestCase
     }
 
     /**
-     * Test the Callback filter mode
-     * @return void
+     * Test the Callback filter mode with a wrong callable
      *
+     * @return void
      * @expectedException \InvalidArgumentException
      */
     public function testMaintenanceModeCallbackException()
     {
         Configure::write('Wrench.enable', true);
-        Configure::write('Wrench.whitelist', ['127.0.0.1']);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
             'REQUEST_URI' => '/'
@@ -99,5 +97,48 @@ class CallbackTest extends TestCase
         ]);
 
         $middleware($request, $response, $next);
+    }
+
+    /**
+     * Test the Callback filter mode when using the "whitelist" option. Meaning the maintenance mode should not be shown
+     * if the client IP is whitelisted.
+     *
+     * @return void
+     */
+    public function testMaintenanceModeCallbackWhitelist()
+    {
+        Configure::write('Wrench.enable', true);
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
+            'whitelist' => ['127.0.0.1'],
+            'mode' => [
+                'className' => 'Wrench\Mode\Callback',
+                'config' => [
+                    'callback' => function ($request, $response) {
+                        $string = 'Some content from a callback';
+
+                        $stream = new Stream(fopen('php://memory', 'r+'));
+                        $stream->write($string);
+                        $response = $response->withBody($stream);
+                        $response = $response->withStatus(503);
+                        $response = $response->withHeader('someHeader', 'someValue');
+
+                        return $response;
+                    }
+                ]
+            ]
+        ]);
+        $middlewareResponse = $middleware($request, $response, $next);
+
+        $this->assertEquals('', (string)$middlewareResponse->getBody());
+        $this->assertEquals(200, $middlewareResponse->getStatusCode());
     }
 }
