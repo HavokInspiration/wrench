@@ -116,6 +116,23 @@ $middleware->add(new MaintenanceMiddleware([
 ]);
 ```
 
+#### IP Whitelisting
+
+While you put your application under maintenance, you might want, as the project administrator or developer, to be able
+to access the application. You can do so using the IP whitelisting feature.
+When configuring the `MaintenanceMiddleware`, just pass an array of allowed IP addresses to the `whitelist` key in the 
+Middleware configuration array. All those IP will be allowed to access the application, even if the maintenance mode is
+on:
+
+```php
+$middleware->add(new MaintenanceMiddleware([
+    'whitelist' => ['1.2.3.4', '5.6.7.8'],
+]));
+```
+
+In the above example, clients connecting with the IP address `1.2.3.4` or `5.6.7.8` will be able to access the project,
+even if the maintenance mode is on.
+
 #### Redirect Mode
 
 The Redirect Mode is the default one. It will perform a redirect to a specific URL.
