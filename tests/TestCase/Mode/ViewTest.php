@@ -48,7 +48,8 @@ class ViewTest extends TestCase
         Configure::write('Wrench.enable', true);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
@@ -80,7 +81,8 @@ class ViewTest extends TestCase
 
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
@@ -118,7 +120,8 @@ class ViewTest extends TestCase
 
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
