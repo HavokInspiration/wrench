@@ -163,6 +163,7 @@ class MaintenanceMiddleware
             return $request->clientIp();
         }
 
+        // @codeCoverageIgnoreStart
         if ($request instanceof ServerRequestInterface) {
             $ip = '';
             $serverParams = $request->getServerParams();
@@ -176,6 +177,7 @@ class MaintenanceMiddleware
 
             return $ip;
         }
+        // @codeCoverageIgnoreEnd
 
         return '';
     }
