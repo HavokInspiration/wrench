@@ -38,7 +38,8 @@ class OutputTest extends TestCase
         Configure::write('Wrench.enable', true);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
@@ -66,7 +67,8 @@ class OutputTest extends TestCase
         Configure::write('Wrench.enable', true);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
@@ -103,7 +105,8 @@ class OutputTest extends TestCase
         Configure::write('Wrench.enable', true);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
@@ -118,5 +121,36 @@ class OutputTest extends TestCase
             ]
         ]);
         $middleware($request, $response, $next);
+    }
+
+    /**
+     * Test the Output filter mode without params when using the "whitelist" option. Meaning the maintenance mode should
+     * not be shown if the client IP is whitelisted.
+     *
+     * @return void
+     */
+    public function testOutputModeWhitelist()
+    {
+        Configure::write('Wrench.enable', true);
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
+            'whitelist' => ['127.0.0.1'],
+            'mode' => [
+                'className' => 'Wrench\Mode\Output'
+            ]
+        ]);
+        $res = $middleware($request, $response, $next);
+
+        $this->assertEquals(200, $res->getStatusCode());
+
+        $this->assertEquals($res->getBody(), '');
     }
 }

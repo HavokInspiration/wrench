@@ -48,7 +48,8 @@ class ViewTest extends TestCase
         Configure::write('Wrench.enable', true);
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
@@ -80,7 +81,8 @@ class ViewTest extends TestCase
 
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
@@ -118,7 +120,8 @@ class ViewTest extends TestCase
 
         $request = ServerRequestFactory::fromGlobals([
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/'
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
         ]);
         $response = new Response();
         $next = function ($req, $res) {
@@ -186,5 +189,38 @@ class ViewTest extends TestCase
         $this->assertEquals($expected, (string)$middlewareResponse->getBody());
         $this->assertEquals('someValue', $middlewareResponse->getHeaderLine('someHeader'));
         $this->assertEquals('additionalValue', $middlewareResponse->getHeaderLine('additionalHeader'));
+    }
+
+    /**
+     * Test the View filter mode without params when using the "whitelist" option. Meaning the maintenance mode
+     * should not be shown if the client IP is whitelisted.
+     *
+     * @return void
+     */
+    public function testViewModeNoParamsWhitelist()
+    {
+        Configure::write('Wrench.enable', true);
+        $request = ServerRequestFactory::fromGlobals([
+            'HTTP_HOST' => 'localhost',
+            'REQUEST_URI' => '/',
+            'REMOTE_ADDR' => '127.0.0.1'
+        ]);
+        $response = new Response();
+        $next = function ($req, $res) {
+            return $res;
+        };
+        $middleware = new MaintenanceMiddleware([
+            'whitelist' => ['127.0.0.1'],
+            'mode' => [
+                'className' => 'Wrench\Mode\View',
+                'config' => [
+                    'headers' => ['someHeader' => 'someValue', 'additionalHeader' => 'additionalValue']
+                ]
+            ]
+        ]);
+        $middlewareResponse = $middleware($request, $response, $next);
+
+        $this->assertEquals('', (string)$middlewareResponse->getBody());
+        $this->assertEquals(200, $middlewareResponse->getStatusCode());
     }
 }

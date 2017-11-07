@@ -14,6 +14,7 @@ namespace Wrench\Middleware;
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Wrench\Mode\Exception\MissingModeException;
 use Wrench\Mode\Mode;
 
@@ -44,7 +45,8 @@ class MaintenanceMiddleware
         'mode' => [
             'className' => 'Wrench\Mode\Redirect',
             'config' => []
-        ]
+        ],
+        'whitelist' => []
     ];
 
     /**
@@ -76,7 +78,11 @@ class MaintenanceMiddleware
     }
 
     /**
-     * Serve assets if the path matches one.
+     * Serve the maintenance mode if it is enabled and properly configured.
+     * If the Configure parameter `Wrench.enable` is set to `false`, the maintenance mode will not be served.
+     * If it is set to `true` but the IP of the client is in the (optional) whitelist, the maintenance mode will not be
+     * served. The gives the opportunity for an application maintainer to see the application running normally in case
+     * the maintenance mode is enabled.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Message\ResponseInterface $response The response.
@@ -85,7 +91,8 @@ class MaintenanceMiddleware
      */
     public function __invoke($request, $response, $next)
     {
-        if (!Configure::read('Wrench.enable')) {
+        $clientIp = $this->getClientIp($request);
+        if (!Configure::read('Wrench.enable') || $this->isWhitelisted($clientIp)) {
             return $next($request, $response);
         }
 
@@ -125,5 +132,53 @@ class MaintenanceMiddleware
         }
 
         return $this->_mode = $mode;
+    }
+
+    /**
+     * Checks the whitelist against the current session IP.
+     *
+     * @param string $ip IP the client is using to connect to the app.
+     * @return bool True if the IP should bypass the maintenance mode.
+     */
+    protected function isWhitelisted($ip)
+    {
+        foreach ($this->_config['whitelist'] as $bypassIp) {
+            if ($ip === $bypassIp) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the client IP.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request Request used.
+     * @return string IP of the client.
+     */
+    protected function getClientIp($request)
+    {
+        if (method_exists($request, 'clientIp')) {
+            return $request->clientIp();
+        }
+
+        // @codeCoverageIgnoreStart
+        if ($request instanceof ServerRequestInterface) {
+            $ip = '';
+            $serverParams = $request->getServerParams();
+            if (!empty($serverParams['HTTP_CLIENT_IP'])) {
+                $ip = $serverParams['HTTP_CLIENT_IP'];
+            } elseif (!empty($serverParams['HTTP_X_FORWARDED_FOR'])) {
+                $ip = $serverParams['HTTP_X_FORWARDED_FOR'];
+            } elseif (!empty($serverParams['REMOTE_ADDR'])) {
+                $ip = $serverParams['REMOTE_ADDR'];
+            }
+
+            return $ip;
+        }
+        // @codeCoverageIgnoreEnd
+
+        return '';
     }
 }
