@@ -14,7 +14,7 @@ class PluginExample extends Mode
     /**
      * Array containing the default config value for your maintenance mode
      * This value can be overridden when loading the mode
-     * You can access a config value using $this->config('configkey');
+     * You can access a config value using $this->getConfig('configkey');
      *
      * @see \Cake\Core\InstanceConfigTrait
      */
