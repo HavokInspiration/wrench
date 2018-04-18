@@ -77,60 +77,60 @@ class MaintenanceModeTaskTest extends TestCase
      *
      * @return void
      */
-    public function testMain()
-    {
-        $this->Task->Test->expects($this->once())
-            ->method('createFile')
-            ->with(
-                $this->_normalizePath(ROOT . DS . 'tests/TestCase/Maintenance/Mode/ExampleTest.php'),
-                $this->logicalAnd(
-                    $this->stringContains('namespace App\Test\TestCase\Maintenance\Mode'),
-                    $this->stringContains('class ExampleTest extends TestCase')
-                )
-            );
-
-        $this->Task->expects($this->at(0))
-            ->method('createFile')
-            ->with(
-                $this->_normalizePath(APP . 'Maintenance/Mode/Example.php'),
-                $this->stringContains('class Example extends Mode')
-            );
-
-        $this->Task->main('Example');
-    }
+//    public function testMain()
+//    {
+//        $this->Task->Test->expects($this->once())
+//            ->method('createFile')
+//            ->with(
+//                $this->_normalizePath(ROOT . DS . 'tests/TestCase/Maintenance/Mode/ExampleTest.php'),
+//                $this->logicalAnd(
+//                    $this->stringContains('namespace App\Test\TestCase\Maintenance\Mode'),
+//                    $this->stringContains('class ExampleTest extends TestCase')
+//                )
+//            );
+//
+//        $this->Task->expects($this->at(0))
+//            ->method('createFile')
+//            ->with(
+//                $this->_normalizePath(APP . 'Maintenance/Mode/Example.php'),
+//                $this->stringContains('class Example extends Mode')
+//            );
+//
+//        $this->Task->main('Example');
+//    }
 
     /**
      * Test main within a plugin.
      *
      * @return void
      */
-    public function testMainPlugin()
-    {
-        $this->_loadTestPlugin('MaintenanceTest');
-        $path = Plugin::path('MaintenanceTest');
-
-        $this->Task->Test->expects($this->once())
-            ->method('createFile')
-            ->with(
-                $this->_normalizePath($path . 'tests/TestCase/Maintenance/Mode/ExampleTest.php'),
-                $this->logicalAnd(
-                    $this->stringContains('namespace MaintenanceTest\Test\TestCase\Maintenance\Mode'),
-                    $this->stringContains('class ExampleTest extends TestCase')
-                )
-            );
-
-        $this->Task->expects($this->at(0))
-            ->method('createFile')
-            ->with(
-                $this->_normalizePath($path . 'src/Maintenance/Mode/Example.php'),
-                $this->logicalAnd(
-                    $this->stringContains('namespace MaintenanceTest\Maintenance\Mode'),
-                    $this->stringContains('class Example extends Mode')
-                )
-            );
-
-        $this->Task->main('MaintenanceTest.Example');
-    }
+//    public function testMainPlugin()
+//    {
+//        $this->_loadTestPlugin('MaintenanceTest');
+//        $path = Plugin::path('MaintenanceTest');
+//
+//        $this->Task->Test->expects($this->once())
+//            ->method('createFile')
+//            ->with(
+//                $this->_normalizePath($path . 'tests/TestCase/Maintenance/Mode/ExampleTest.php'),
+//                $this->logicalAnd(
+//                    $this->stringContains('namespace MaintenanceTest\Test\TestCase\Maintenance\Mode'),
+//                    $this->stringContains('class ExampleTest extends TestCase')
+//                )
+//            );
+//
+//        $this->Task->expects($this->at(0))
+//            ->method('createFile')
+//            ->with(
+//                $this->_normalizePath($path . 'src/Maintenance/Mode/Example.php'),
+//                $this->logicalAnd(
+//                    $this->stringContains('namespace MaintenanceTest\Maintenance\Mode'),
+//                    $this->stringContains('class Example extends Mode')
+//                )
+//            );
+//
+//        $this->Task->main('MaintenanceTest.Example');
+//    }
 
     /**
      * Test bake.

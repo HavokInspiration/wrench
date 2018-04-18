@@ -56,7 +56,7 @@ class Redirect extends Mode
         $url = $this->_getUrl($request);
         $headers = $this->getConfig('headers');
 
-        return new RedirectResponse($url, $this->setConfig('code'), $headers);
+        return new RedirectResponse($url, $this->getConfig('code'), $headers);
     }
 
     /**
