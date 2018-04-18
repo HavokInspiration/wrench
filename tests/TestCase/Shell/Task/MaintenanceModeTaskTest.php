@@ -72,11 +72,11 @@ class MaintenanceModeTaskTest extends TestCase
         ]);
     }
 
-    /**
-     * Test the excute method.
-     *
-     * @return void
-     */
+/**
+ * Test the excute method.
+ *
+ * @return void
+ */
 //    public function testMain()
 //    {
 //        $this->Task->Test->expects($this->once())
@@ -99,11 +99,11 @@ class MaintenanceModeTaskTest extends TestCase
 //        $this->Task->main('Example');
 //    }
 
-    /**
-     * Test main within a plugin.
-     *
-     * @return void
-     */
+/**
+ * Test main within a plugin.
+ *
+ * @return void
+ */
 //    public function testMainPlugin()
 //    {
 //        $this->_loadTestPlugin('MaintenanceTest');
