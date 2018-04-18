@@ -75,8 +75,8 @@ class View extends Mode
 
         $viewConfig = $this->_config['view'] ?: [];
         $view = new $className(
-            RequestTransformer::toCake($request),
-            ResponseTransformer::toCake($response),
+            $request,
+            $response,
             null,
             $viewConfig
         );

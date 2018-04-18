@@ -39,7 +39,7 @@ abstract class Mode
      */
     public function __construct($config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
     }
 
     /**
