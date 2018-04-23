@@ -72,17 +72,6 @@ class View extends Mode
             $className = 'App\View\AppView';
         }
 
-        // $request must now be an instance of \Cake\Http\Request
-        if (!$request instanceof \Cake\Http\Request) {
-            /* @deprecated 3.4.0 No longer used. Will be removed in 4.0.0 */
-            $request = RequestTransformer::toCake($request);
-        }
-        // $response must now be an instance of \Cake\Http\Response
-        if (!$response instanceof \Cake\Http\Response) {
-            /* @deprecated 3.4.0 No longer used. Will be removed in 4.0.0 */
-            $response = ResponseTransformer::toCake($response);
-        }
-
         $viewConfig = $this->_config['view'] ?: [];
         $view = new $className(
             $request,
