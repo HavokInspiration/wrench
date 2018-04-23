@@ -1,4 +1,4 @@
-<%
+{#
 /**
  * Copyright (c) Yves Piquel (http://www.havokinspiration.fr)
  *
@@ -9,18 +9,18 @@
  * @link          http://github.com/HavokInspiration/wrench
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-%>
+#}
 <?php
-namespace <%= $namespace %>\Maintenance\Mode;
+namespace {{ namespace }}\Maintenance\Mode;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Wrench\Mode\Mode;
 
 /**
- * <%= $name %> Maintenance Mode
+ * {{ name }} Maintenance Mode
  */
-class <%= $name %> extends Mode
+class {{ name }} extends Mode
 {
 
     /**

@@ -31,6 +31,11 @@ class MaintenanceModeTaskTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        Plugin::load('WyriHaximus/TwigView', [
+            'bootstrap' => true,
+        ]);
+
         $this->_compareBasePath = Plugin::path('Wrench') . 'tests' . DS . 'comparisons' . DS . 'Maintenance' . DS . 'Mode' . DS;
 
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')
@@ -72,65 +77,65 @@ class MaintenanceModeTaskTest extends TestCase
         ]);
     }
 
-/**
- * Test the excute method.
- *
- * @return void
- */
-//    public function testMain()
-//    {
-//        $this->Task->Test->expects($this->once())
-//            ->method('createFile')
-//            ->with(
-//                $this->_normalizePath(ROOT . DS . 'tests/TestCase/Maintenance/Mode/ExampleTest.php'),
-//                $this->logicalAnd(
-//                    $this->stringContains('namespace App\Test\TestCase\Maintenance\Mode'),
-//                    $this->stringContains('class ExampleTest extends TestCase')
-//                )
-//            );
-//
-//        $this->Task->expects($this->at(0))
-//            ->method('createFile')
-//            ->with(
-//                $this->_normalizePath(APP . 'Maintenance/Mode/Example.php'),
-//                $this->stringContains('class Example extends Mode')
-//            );
-//
-//        $this->Task->main('Example');
-//    }
+    /**
+     * Test the excute method.
+     *
+     * @return void
+     */
+    public function testMain()
+    {
+        $this->Task->Test->expects($this->once())
+            ->method('createFile')
+            ->with(
+                $this->_normalizePath(ROOT . DS . 'tests/TestCase/Maintenance/Mode/ExampleTest.php'),
+                $this->logicalAnd(
+                    $this->stringContains('namespace App\Test\TestCase\Maintenance\Mode'),
+                    $this->stringContains('class ExampleTest extends TestCase')
+                )
+            );
 
-/**
- * Test main within a plugin.
- *
- * @return void
- */
-//    public function testMainPlugin()
-//    {
-//        $this->_loadTestPlugin('MaintenanceTest');
-//        $path = Plugin::path('MaintenanceTest');
-//
-//        $this->Task->Test->expects($this->once())
-//            ->method('createFile')
-//            ->with(
-//                $this->_normalizePath($path . 'tests/TestCase/Maintenance/Mode/ExampleTest.php'),
-//                $this->logicalAnd(
-//                    $this->stringContains('namespace MaintenanceTest\Test\TestCase\Maintenance\Mode'),
-//                    $this->stringContains('class ExampleTest extends TestCase')
-//                )
-//            );
-//
-//        $this->Task->expects($this->at(0))
-//            ->method('createFile')
-//            ->with(
-//                $this->_normalizePath($path . 'src/Maintenance/Mode/Example.php'),
-//                $this->logicalAnd(
-//                    $this->stringContains('namespace MaintenanceTest\Maintenance\Mode'),
-//                    $this->stringContains('class Example extends Mode')
-//                )
-//            );
-//
-//        $this->Task->main('MaintenanceTest.Example');
-//    }
+        $this->Task->expects($this->at(0))
+            ->method('createFile')
+            ->with(
+                $this->_normalizePath(APP . 'Maintenance/Mode/Example.php'),
+                $this->stringContains('class Example extends Mode')
+            );
+
+        $this->Task->main('Example');
+    }
+
+    /**
+     * Test main within a plugin.
+     *
+     * @return void
+     */
+    public function testMainPlugin()
+    {
+        $this->_loadTestPlugin('MaintenanceTest');
+        $path = Plugin::path('MaintenanceTest');
+
+        $this->Task->Test->expects($this->once())
+            ->method('createFile')
+            ->with(
+                $this->_normalizePath($path . 'tests/TestCase/Maintenance/Mode/ExampleTest.php'),
+                $this->logicalAnd(
+                    $this->stringContains('namespace MaintenanceTest\Test\TestCase\Maintenance\Mode'),
+                    $this->stringContains('class ExampleTest extends TestCase')
+                )
+            );
+
+        $this->Task->expects($this->at(0))
+            ->method('createFile')
+            ->with(
+                $this->_normalizePath($path . 'src/Maintenance/Mode/Example.php'),
+                $this->logicalAnd(
+                    $this->stringContains('namespace MaintenanceTest\Maintenance\Mode'),
+                    $this->stringContains('class Example extends Mode')
+                )
+            );
+
+        $this->Task->main('MaintenanceTest.Example');
+    }
 
     /**
      * Test bake.

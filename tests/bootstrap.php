@@ -45,6 +45,7 @@ Configure::write('App', [
 ]);
 
 Configure::write('App', [
+    'encoding' => 'utf-8',
     'namespace' => 'App',
     'paths' => [
         'plugins' => [APP . 'Plugin' . DS],
