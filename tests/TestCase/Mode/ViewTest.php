@@ -13,10 +13,10 @@ namespace Wrench\Test\TestCase\Mode;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use Wrench\Middleware\MaintenanceMiddleware;
-use Zend\Diactoros\Response;
 
 class ViewTest extends TestCase
 {

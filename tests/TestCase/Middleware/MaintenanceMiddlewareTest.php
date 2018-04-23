@@ -29,8 +29,8 @@ class MaintenanceMiddlewareTest extends TestCase
     public function testMaintenanceModeFilterNoParams()
     {
         $middleware = new MaintenanceMiddleware();
-        $this->assertEquals('Wrench\Mode\Redirect', $middleware->config('mode.className'));
-        $this->assertEquals([], $middleware->config('mode.config'));
+        $this->assertEquals('Wrench\Mode\Redirect', $middleware->getConfig('mode.className'));
+        $this->assertEquals([], $middleware->getConfig('mode.config'));
         $this->assertInstanceOf('Wrench\Mode\Redirect', $middleware->mode());
     }
 
@@ -55,6 +55,6 @@ class MaintenanceMiddlewareTest extends TestCase
             'url' => 'http://example.com/maintenance/',
             'headers' => []
         ];
-        $this->assertEquals($expected, $middleware->mode()->config());
+        $this->assertEquals($expected, $middleware->mode()->getConfig());
     }
 }

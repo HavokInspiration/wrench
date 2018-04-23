@@ -56,7 +56,7 @@ class MaintenanceMiddleware
      */
     public function __construct($config = [])
     {
-        $this->config($config);
+        $this->setConfig($config);
         $mode = $this->_config['mode'];
 
         if (is_array($mode)) {

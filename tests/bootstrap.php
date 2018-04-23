@@ -34,6 +34,7 @@ define('CORE_PATH', $root . DS . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS
 define('ROOT', $root . DS . 'tests' . DS . 'test_app');
 define('APP', ROOT . DS . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
+define('CACHE', TMP . 'cache' . DS);
 
 Configure::write('debug', true);
 Configure::write('App', [
@@ -44,6 +45,7 @@ Configure::write('App', [
 ]);
 
 Configure::write('App', [
+    'encoding' => 'utf-8',
     'namespace' => 'App',
     'paths' => [
         'plugins' => [APP . 'Plugin' . DS],

@@ -54,9 +54,9 @@ class Redirect extends Mode
     public function process(ServerRequestInterface $request, ResponseInterface $response)
     {
         $url = $this->_getUrl($request);
-        $headers = $this->config('headers');
+        $headers = $this->getConfig('headers');
 
-        return new RedirectResponse($url, $this->config('code'), $headers);
+        return new RedirectResponse($url, $this->getConfig('code'), $headers);
     }
 
     /**

@@ -12,10 +12,10 @@
 namespace Wrench\Test\TestCase\Mode;
 
 use Cake\Core\Configure;
+use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
 use Wrench\Middleware\MaintenanceMiddleware;
-use Zend\Diactoros\Response;
 
 class OutputTest extends TestCase
 {

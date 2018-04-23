@@ -14,11 +14,11 @@ for your CakePHP website / applications.
 
 ## About the plugin versions
 
-| CakePHP < 3.3.0 | CakePHP >= 3.3.0 |
-| --------------- | ---------------- |
-| Wrench 1.X | Wrench 2.X |
-| PHP >= 5.4.16 | PHP >= 5.5.9 |
-| Uses CakePHP DispatcherFilter mecanism | Uses CakePHP Middleware Stack and PSR-7 Request / Response implementation |
+| CakePHP < 3.3.0 | CakePHP >= 3.3.0 | CakePHP >= 3.6.0 |
+| --------------- | ---------------- | ---------------- |
+| Wrench 1.X | Wrench 2.X | Wrench 3.X |
+| PHP >= 5.4.16 | PHP >= 5.5.9 | PHP >= 5.6.0 |
+| Uses CakePHP DispatcherFilter mecanism | Uses CakePHP Middleware Stack and PSR-7 Request / Response implementation | Uses CakePHP Middleware Stack and PSR-7 Request / Response implementation + no deprecation warning from CakePHP 3.6.X |
 
 ## Recommanded package
 

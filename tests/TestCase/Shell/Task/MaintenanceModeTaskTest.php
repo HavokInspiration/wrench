@@ -31,6 +31,11 @@ class MaintenanceModeTaskTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        Plugin::load('WyriHaximus/TwigView', [
+            'bootstrap' => true,
+        ]);
+
         $this->_compareBasePath = Plugin::path('Wrench') . 'tests' . DS . 'comparisons' . DS . 'Maintenance' . DS . 'Mode' . DS;
 
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')
