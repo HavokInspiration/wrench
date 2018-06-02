@@ -12,6 +12,7 @@
 namespace Wrench\Shell\Task;
 
 use Bake\Shell\Task\SimpleBakeTask;
+use Cake\Utility\Inflector;
 
 /**
  * Bake task responsible of generating Maintenance Mode skeleton
@@ -56,13 +57,20 @@ class MaintenanceModeTask extends SimpleBakeTask
      */
     public function bakeTest($className)
     {
-        if (!isset($this->Test->classSuffixes[$this->name()])) {
-            $this->Test->classSuffixes[$this->name()] = '';
+        $suffixName = $typeName = $this->name();
+
+        if (isset($this->Test->classSuffixes['entity'])) {
+            $typeName = ucfirst($typeName);
+        } else {
+            $suffixName = $typeName = Inflector::camelize($typeName);
         }
 
-        $name = ucfirst($this->name());
-        if (!isset($this->Test->classTypes[$name])) {
-            $this->Test->classTypes[$name] = 'Maintenance\Mode';
+        if (!isset($this->Test->classSuffixes[$suffixName])) {
+            $this->Test->classSuffixes[$suffixName] = '';
+        }
+
+        if (!isset($this->Test->classTypes[$typeName])) {
+            $this->Test->classTypes[$typeName] = 'Maintenance\Mode';
         }
 
         return parent::bakeTest($className);
