@@ -12,6 +12,7 @@
 namespace Wrench\Test\TestCase\Shell\Task;
 
 use Bake\Shell\Task\BakeTemplateTask;
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\TestSuite\StringCompareTrait;
 use Cake\TestSuite\TestCase;
@@ -32,9 +33,11 @@ class MaintenanceModeTaskTest extends TestCase
     {
         parent::setUp();
 
-        Plugin::load('WyriHaximus/TwigView', [
-            'bootstrap' => true,
-        ]);
+        if (version_compare(Configure::version(), '3.6.0', '>=')) {
+            Plugin::load('WyriHaximus/TwigView', [
+                'bootstrap' => true,
+            ]);
+        }
 
         $this->_compareBasePath = Plugin::path('Wrench') . 'tests' . DS . 'comparisons' . DS . 'Maintenance' . DS . 'Mode' . DS;
 

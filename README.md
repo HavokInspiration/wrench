@@ -14,7 +14,7 @@ for your CakePHP website / applications.
 
 ## About the plugin versions
 
-| CakePHP < 3.3.0 | CakePHP >= 3.3.0 | CakePHP >= 3.6.0 |
+| CakePHP < 3.3.0 | CakePHP >= 3.3.0 | CakePHP >= 3.5.0 |
 | --------------- | ---------------- | ---------------- |
 | Wrench 1.X | Wrench 2.X | Wrench 3.X |
 | PHP >= 5.4.16 | PHP >= 5.5.9 | PHP >= 5.6.0 |
@@ -64,15 +64,15 @@ use Wrench\Middleware\MaintenanceMiddleware;
 public function middleware($middleware)
 {
     $middleware->add(new MaintenanceMiddleware());
-    
+
     // Other middleware configuration
-    
+
     return $middleware;
 }
 ```
 
 Since this Middleware is here to prevent the application from responding, it should be the first to be treated by the Dispatcher and should,
-as such, be configured as the first one, either by adding it in the beginning of the method with the ``push()`` method or using the 
+as such, be configured as the first one, either by adding it in the beginning of the method with the ``push()`` method or using the
 ``prepend()`` method anywhere you want in your middlewares configuration.
 
 By default, only adding it with the previous line will make use of the **Redirect** mode. More informations on maintenance Modes below.
@@ -120,7 +120,7 @@ $middleware->add(new MaintenanceMiddleware([
 
 While you put your application under maintenance, you might want, as the project administrator or developer, to be able
 to access the application. You can do so using the IP whitelisting feature.
-When configuring the `MaintenanceMiddleware`, just pass an array of allowed IP addresses to the `whitelist` key in the 
+When configuring the `MaintenanceMiddleware`, just pass an array of allowed IP addresses to the `whitelist` key in the
 Middleware configuration array. All those IP will be allowed to access the application, even if the maintenance mode is
 on:
 
